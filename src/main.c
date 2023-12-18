@@ -2,6 +2,7 @@
 #include "include/game/core/dsc/dsc.h"
 #include "include/game/core/objects/target.h"
 #include "include/engine/engine.h"
+#include "include/engine/scene_object.h"
 #include <SDL2/SDL.h>
 
 #ifdef __PSP__
@@ -43,11 +44,11 @@ int main(int argc, char** argv) {
     setup_callbacks();
     pspDebugScreenInit();
 #endif
-    dsc_script_t* script;
-    if (dsc_script_create_from_file(&script, "./test.dsc") != 0)
-    {
-        return -1;
-    }
+    // dsc_script_t* script;
+    // if (dsc_script_create_from_file(&script, "./test.dsc") != 0)
+    // {
+    //     return -1;
+    // }
 
     // list_node_t* timeElementNode = script->timeElements->begin;
     // int y = 0;
@@ -80,15 +81,19 @@ int main(int argc, char** argv) {
     {
         return -1;
     }
+    engine_set_scene(engine, &scene_object_create, &scene_object_free);
 
-    engine_set_scene(engine, &game_object_create, "scene");
+    game_target_t* target;
+    game_target_create(&target);
+
+    game_object_add_child(engine->scene->object, target->object);
 
     while (engine->running)
     {
         engine_cycle(engine);
     }
 
-    dsc_script_free(script);
+    // dsc_script_free(script);
     engine_free(engine);
 
     return 0;

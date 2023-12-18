@@ -4,24 +4,33 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include "include/engine/game_object.h"
+#include "include/engine/scene_object.h"
 
 typedef struct engine_t
 {
     SDL_Renderer* renderer;
     SDL_Window* window;
-    game_object_t* scene;
+    scene_object_t* scene;
+    void (*free_scene)(scene_object_t*);
     short running;
 } engine_t;
 
+extern engine_t* GLOBAL_ENGINE;
+
 int engine_create(engine_t** out);
 
-int engine_set_scene(engine_t* engine, int (*create_scene_game_object)(game_object_t**, const char*), const char* sceneName);
+int engine_set_scene(
+    engine_t* engine, 
+    int (*create_scene_game_object)(scene_object_t**), 
+    void (*free_scene_game_object)(scene_object_t*)
+);
 
 void engine_cycle(engine_t* engine);
 
 void engine_handle_input(engine_t* engine);
 void engine_render(engine_t* engine);
 
+void engine_free_scene(engine_t* engine);
 void engine_free(engine_t* engine);
 
 #endif

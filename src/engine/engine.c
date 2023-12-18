@@ -1,5 +1,7 @@
 #include "include/engine/engine.h"
 
+engine_t* GLOBAL_ENGINE;
+
 int engine_create(engine_t** out)
 {
     engine_t* engine = (engine_t*)malloc(sizeof(engine_t));
@@ -22,28 +24,30 @@ int engine_create(engine_t** out)
     engine->running = 1;
 
     *out = engine;
+    GLOBAL_ENGINE = engine;
     return 0;
 }
 
 int engine_set_scene(
     engine_t* engine, 
-    int (*create_scene_game_object)(game_object_t**, const char*), 
-    const char* sceneName
-    )
+    int (*create_scene_game_object)(scene_object_t**), 
+    void (*free_scene_game_object)(scene_object_t*)
+)
 {
     if (NULL != engine->scene)
     {
-        // TODO: free scene
+        engine->free_scene(engine->scene);
     }
-    if (create_scene_game_object(&engine->scene, sceneName) != 0)
+    if (create_scene_game_object(&engine->scene) != 0)
     {
         return -1;
     }
+    engine->free_scene = free_scene_game_object;
 }
 
 void engine_cycle(engine_t* engine)
 {
-    game_object_cycle(engine->scene);
+    game_object_cycle((*(game_object_t**)engine->scene));
     engine_handle_input(engine);
     engine_render(engine);
 }
@@ -63,12 +67,23 @@ void engine_handle_input(engine_t* engine)
 void engine_render(engine_t* engine)
 {
     SDL_RenderClear(engine->renderer);
+
+    game_object_render((*(game_object_t**)engine->scene));
+
     SDL_SetRenderDrawColor(engine->renderer, 255, 255, 255, 255);
     SDL_RenderPresent(engine->renderer);
 }
 
+void engine_free_scene(engine_t* engine)
+{
+    if (NULL != engine->scene)
+        engine->free_scene(engine->scene);
+}
+
 void engine_free(engine_t* engine)
 {
+    if (NULL != engine->scene)
+        engine->free_scene(engine->scene);
     SDL_DestroyRenderer(engine->renderer);
     SDL_DestroyWindow(engine->window);
     free(engine);

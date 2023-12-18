@@ -1,6 +1,6 @@
 #include "include/engine/game_object.h"
 
-int game_object_create(game_object_t** out, const char* name)
+int game_object_create(game_object_t** out, const char* name, SDL_Point position, render_properties_t renderProperties)
 {
     static int id = 0;
 
@@ -15,6 +15,8 @@ int game_object_create(game_object_t** out, const char* name)
     object->cycle = NULL;
     object->handle_input = NULL;
     object->render = NULL;
+    object->position = position;
+    object->renderProperties = renderProperties;
 
     if (node_list_create(&object->children) != 0)
     {
@@ -92,5 +94,13 @@ void game_object_cycle(game_object_t* object)
     {
         game_object_cycle((game_object_t*)child->data);
         child = child->next;
+    }
+}
+
+void game_object_render(game_object_t* object) // It is the object's duty to draw its children however it wants
+{
+    if (NULL != object->render)
+    {
+        object->render(object->implementation);
     }
 }

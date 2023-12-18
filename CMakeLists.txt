@@ -15,6 +15,8 @@ add_executable(${PROJECT_NAME}
 
     src/engine/engine.c
     src/engine/game_object.c
+    src/engine/scene_object.c
+    src/engine/generic_renderer.c
 
     src/game/core/dsc/opcode.c
     src/game/core/dsc/dsc.c
