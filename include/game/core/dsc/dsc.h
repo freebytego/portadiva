@@ -2,7 +2,10 @@
 #define DSC_H
 
 #include "include/core/list.h"
+
 #include "include/game/core/dsc/target.h"
+#include "include/game/core/dsc/opcode.h"
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -17,7 +20,7 @@ typedef struct {
     list_t* timeElements; // dsc_time_element_t
 } dsc_script_t;
 
-int create_dsc_script_from_file(dsc_script_t** out, const char* filePath);
-void free_dsc_script(dsc_script_t* script);
+int dsc_script_create_from_file(dsc_script_t** out, const char* filePath);
+void dsc_script_free(dsc_script_t* script);
 
 #endif

@@ -1,16 +1,14 @@
 #include <stdio.h>
 #include "include/game/core/dsc/dsc.h"
+#include "include/game/core/objects/target.h"
+#include "include/engine/engine.h"
+#include <SDL2/SDL.h>
 
 #ifdef __PSP__
 
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspdisplay.h>
-
-#define printf pspDebugScreenPrintf
-
-PSP_MODULE_INFO("portadiva", 0, 1, 0);
-PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER);
 
 int exit_callback(int arg1, int arg2, void *common)
 {
@@ -46,44 +44,52 @@ int main(int argc, char** argv) {
     pspDebugScreenInit();
 #endif
     dsc_script_t* script;
-    if (create_dsc_script_from_file(&script, "./test.dsc") != 0)
+    if (dsc_script_create_from_file(&script, "./test.dsc") != 0)
     {
-        perror("fail");
         return -1;
     }
 
-    list_node_t* timeElementNode = script->timeElements->begin;
-    int y = 0;
-    while (timeElementNode != NULL)
+    // list_node_t* timeElementNode = script->timeElements->begin;
+    // int y = 0;
+    // while (timeElementNode != NULL)
+    // {
+    //     #ifdef __PSP__
+    //         pspDebugScreenSetXY(0, y++);
+    //         sceDisplayWaitVblankStart();
+    //     #endif
+    //     dsc_time_element_t* timeElement = ((dsc_time_element_t*)timeElementNode->data);
+    //     printf("time: %d\n", timeElement->time);
+
+    //     list_node_t* targetNode = timeElement->targets->begin;
+    //     while (targetNode != NULL)
+    //     {
+    //         #ifdef __PSP__
+    //             pspDebugScreenSetXY(0, y++);
+    //             sceDisplayWaitVblankStart();
+    //         #endif
+    //         dsc_target_t* target = ((dsc_target_t*)targetNode->data);
+    //         printf("target at %d : %d, %d, %d, %d, %d, %d, %d\n", target->time, target->type, target->x, target->y, target->angle, target->distance, target->amplitude, target->frequency);
+    //         targetNode = targetNode->next;
+    //     }
+
+    //     timeElementNode = timeElementNode->next;
+    // }
+
+    engine_t* engine;
+    if (engine_create(&engine) != 0)
     {
-        #ifdef __PSP__
-            pspDebugScreenSetXY(0, y++);
-            sceDisplayWaitVblankStart();
-        #endif
-        dsc_time_element_t* timeElement = ((dsc_time_element_t*)timeElementNode->data);
-        printf("time: %d\n", timeElement->time);
-
-        list_node_t* targetNode = timeElement->targets->begin;
-        while (targetNode != NULL)
-        {
-            #ifdef __PSP__
-                pspDebugScreenSetXY(0, y++);
-                sceDisplayWaitVblankStart();
-            #endif
-            dsc_target_t* target = ((dsc_target_t*)targetNode->data);
-            printf("target at %d : %d, %d, %d, %d, %d, %d, %d\n", target->time, target->type, target->x, target->y, target->angle, target->distance, target->amplitude, target->frequency);
-            targetNode = targetNode->next;
-        }
-
-        timeElementNode = timeElementNode->next;
+        return -1;
     }
 
-    while (1)
+    engine_set_scene(engine, &game_object_create, "scene");
+
+    while (engine->running)
     {
-        
+        engine_cycle(engine);
     }
 
-    free_dsc_script(script);
+    dsc_script_free(script);
+    engine_free(engine);
 
     return 0;
 }

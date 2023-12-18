@@ -10,8 +10,16 @@ endif ()
 
 add_executable(${PROJECT_NAME} 
     src/main.c 
-    src/game/core/dsc/dsc.c
+
     src/core/list.c
+
+    src/engine/engine.c
+    src/engine/game_object.c
+
+    src/game/core/dsc/opcode.c
+    src/game/core/dsc/dsc.c
+    src/game/core/objects/target.c
+    
 )
 
 find_package(SDL2 REQUIRED)
@@ -28,15 +36,25 @@ include_directories(.)
 
 if(PSP)
     target_link_libraries(${PROJECT_NAME} PRIVATE
-        SDL2_ttf
+        SDL2main
+        SDL2
+        GL
+        png
+        jpeg
         freetype
         m
         bz2
         png16
         z
+        pspvram
+        pspaudio
+        pspvfpu
+        pspgu
+        pspge
+        psphprm
+        pspctrl
         pspdebug
         pspdisplay
-        pspge
     )
     create_pbp_file(
         TARGET ${PROJECT_NAME}

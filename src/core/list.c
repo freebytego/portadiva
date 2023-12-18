@@ -1,6 +1,6 @@
 #include "include/core/list.h"
 
-int create_node_list(list_t** out)
+int node_list_create(list_t** out)
 {
     list_t* list = (list_t*)malloc(sizeof(list_t));
     if (NULL == list)
@@ -18,7 +18,7 @@ int create_node_list(list_t** out)
     return 0;
 }
 
-int add_node_to_node_list(list_t* list, void* data)
+int node_list_add_node(list_t* list, void* data)
 {
     if (NULL == list)
     {
@@ -42,7 +42,7 @@ int add_node_to_node_list(list_t* list, void* data)
     return 0;
 }
 
-void remove_node_from_node_list(list_t* list, list_node_t* node)
+void node_list_remove_node(list_t* list, list_node_t* node)
 {
     if (node->next == NULL)
     {
@@ -60,10 +60,11 @@ void remove_node_from_node_list(list_t* list, list_node_t* node)
     {
         node->previous->next = node->next;
     }
+    list->length--;
     free(node);
 }
 
-void free_node_list(list_t* list)
+void node_list_free(list_t* list)
 {
     list_node_t* node = list->begin;
     while (node != NULL)

@@ -18,9 +18,9 @@ typedef struct list_t
     list_node_t* end;
 } list_t;
 
-int create_node_list(list_t** out);
-int add_node_to_node_list(list_t* list, void* data);
-void remove_node_from_node_list(list_t* list, list_node_t* node); // doesn't free inside data!
-void free_node_list(list_t* list); // doesn't free inside data!
+int node_list_create(list_t** out);
+int node_list_add_node(list_t* list, void* data);
+void node_list_remove_node(list_t* list, list_node_t* node); // doesn't free inside data!
+void node_list_free(list_t* list); // doesn't free inside data!
 
 #endif

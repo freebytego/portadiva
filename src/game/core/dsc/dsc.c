@@ -1,8 +1,6 @@
 #include "include/game/core/dsc/dsc.h"
 
-#include "include/game/core/dsc/opcode.h"
-
-int create_dsc_script_from_file(dsc_script_t** out, const char* filePath)
+int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
 {
     dsc_script_t* script = (dsc_script_t*)malloc(sizeof(dsc_script_t));
     if (NULL == script)
@@ -10,7 +8,7 @@ int create_dsc_script_from_file(dsc_script_t** out, const char* filePath)
         perror("failed to allocate a dsc script");
         return -1;
     }
-    if (create_node_list(&script->timeElements) != 0)
+    if (node_list_create(&script->timeElements) != 0)
     {
         perror("failed to allocate a time elements list in a dsc script");
         return -1;
@@ -30,7 +28,7 @@ int create_dsc_script_from_file(dsc_script_t** out, const char* filePath)
     while(fread(&value, sizeof(value), 1, dscFile) > 0)
     {
         // read parameters for opcode
-        short parametersCount = get_parameters_count(value);
+        short parametersCount = opcode_get_parameters_count(value);
         if (parametersCount > 0)
         {
             int32_t* parametersList = (int32_t*)malloc(sizeof(int32_t) * parametersCount);
@@ -61,14 +59,14 @@ int create_dsc_script_from_file(dsc_script_t** out, const char* filePath)
                     }
                     element->time = lastReadTime;
                     lastTimeElement = element;
-                    if (create_node_list(&element->targets) != 0)
+                    if (node_list_create(&element->targets) != 0)
                     {
                         // TODO: free script struct
                         perror("failed to allocate a time element");
                         fclose(dscFile);
                         return -1;
                     }
-                    add_node_to_node_list(script->timeElements, element);
+                    node_list_add_node(script->timeElements, element);
                     break;
                 case DSC_OPCODE_TARGET:
                 {
@@ -87,7 +85,7 @@ int create_dsc_script_from_file(dsc_script_t** out, const char* filePath)
                     target->angle = parametersList[4];
                     target->amplitude = parametersList[5]; 
                     target->frequency = parametersList[6];
-                    add_node_to_node_list(lastTimeElement->targets, target);
+                    node_list_add_node(lastTimeElement->targets, target);
                     break;
                 }
             }
@@ -100,7 +98,7 @@ int create_dsc_script_from_file(dsc_script_t** out, const char* filePath)
     return 0;
 }
 
-void free_dsc_script(dsc_script_t* script)
+void dsc_script_free(dsc_script_t* script)
 {
     list_node_t* timeElementNode = script->timeElements->begin;
     while (NULL != timeElementNode)
@@ -112,10 +110,10 @@ void free_dsc_script(dsc_script_t* script)
             free(targetNode->data);
             targetNode = targetNode->next;
         }
-        free_node_list(timeElement->targets);
+        node_list_free(timeElement->targets);
         free(timeElementNode->data);
         timeElementNode = timeElementNode->next;
     }
-    free_node_list(script->timeElements);
+    node_list_free(script->timeElements);
     free(script);
 }
