@@ -60,6 +60,10 @@ void game_object_free(game_object_t* object)
         childNode = childNode->next;
     }
     node_list_free(object->children);
+    if (NULL != object->parent)
+    {
+        game_object_remove_child(object->parent, object);
+    }
     free(object);
 }
 

@@ -44,38 +44,6 @@ int main(int argc, char** argv) {
     setup_callbacks();
     pspDebugScreenInit();
 #endif
-    // dsc_script_t* script;
-    // if (dsc_script_create_from_file(&script, "./test.dsc") != 0)
-    // {
-    //     return -1;
-    // }
-
-    // list_node_t* timeElementNode = script->timeElements->begin;
-    // int y = 0;
-    // while (timeElementNode != NULL)
-    // {
-    //     #ifdef __PSP__
-    //         pspDebugScreenSetXY(0, y++);
-    //         sceDisplayWaitVblankStart();
-    //     #endif
-    //     dsc_time_element_t* timeElement = ((dsc_time_element_t*)timeElementNode->data);
-    //     printf("time: %d\n", timeElement->time);
-
-    //     list_node_t* targetNode = timeElement->targets->begin;
-    //     while (targetNode != NULL)
-    //     {
-    //         #ifdef __PSP__
-    //             pspDebugScreenSetXY(0, y++);
-    //             sceDisplayWaitVblankStart();
-    //         #endif
-    //         dsc_target_t* target = ((dsc_target_t*)targetNode->data);
-    //         printf("target at %d : %d, %d, %d, %d, %d, %d, %d\n", target->time, target->type, target->x, target->y, target->angle, target->distance, target->amplitude, target->frequency);
-    //         targetNode = targetNode->next;
-    //     }
-
-    //     timeElementNode = timeElementNode->next;
-    // }
-
     engine_t* engine;
     if (engine_create(&engine) != 0)
     {

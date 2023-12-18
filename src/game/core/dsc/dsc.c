@@ -24,6 +24,7 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
     fseek(dscFile, 4, SEEK_CUR);
 
     int32_t lastReadTime = 0;
+    int32_t lastFlyingTime = 0;
     dsc_time_element_t* lastTimeElement;
     while(fread(&value, sizeof(value), 1, dscFile) > 0)
     {
@@ -48,6 +49,7 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
             switch (value)
             {
                 case DSC_OPCODE_TIME:
+                {
                     lastReadTime = parametersList[0];
                     dsc_time_element_t* element = (dsc_time_element_t*)malloc(sizeof(dsc_time_element_t));
                     if (NULL == element)
@@ -58,6 +60,7 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
                         return -1;
                     }
                     element->time = lastReadTime;
+                    element->flyingTime = lastFlyingTime;
                     lastTimeElement = element;
                     if (node_list_create(&element->targets) != 0)
                     {
@@ -68,6 +71,19 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
                     }
                     node_list_add_node(script->timeElements, element);
                     break;
+                }
+                case DSC_OPCODE_TARGET_FLYING_TIME:
+                {
+                    lastFlyingTime = parametersList[0];
+                    lastTimeElement->flyingTime = lastFlyingTime;
+                    break;
+                }
+                case DSC_OPCODE_BAR_TIME_SET:
+                {
+                    lastFlyingTime = (int)((60.0f / (float)parametersList[0]) * (parametersList[1] + 1) * 1000.0f);
+                    lastTimeElement->flyingTime = lastFlyingTime;
+                    break;
+                }
                 case DSC_OPCODE_TARGET:
                 {
                     dsc_target_t* target = (dsc_target_t*)malloc(sizeof(dsc_target_t));

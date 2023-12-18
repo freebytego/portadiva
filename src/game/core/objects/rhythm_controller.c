@@ -38,23 +38,32 @@ void game_rhythm_controller_cycle(void* controller)
     game_rhythm_controller_t* gameController = (game_rhythm_controller_t*)controller;
     gameController->ticks = (SDL_GetTicks() - gameController->startedAt) * 100;
     
+    list_node_t* childNode = gameController->object->children->begin;
+    while (NULL != childNode)
+    {
+        game_target_t* child = (game_target_t*)((game_object_t*)childNode->data)->implementation; // lmao
+        childNode = childNode->next;
+        if (child->finished == 1)
+        {
+            game_target_free(child);
+        }
+    }
+
     list_node_t* nextTimeElementNode = gameController->script->timeElements->begin;
     if (NULL != nextTimeElementNode)
     {
         dsc_time_element_t* nextTimeElement = (dsc_time_element_t*)nextTimeElementNode->data;
-        printf("ticks: %d | next arrives at: %d | len: %d\n", gameController->ticks, (dsc_time_element_t*)gameController->script->timeElements->length, nextTimeElement->time);
         if (gameController->ticks > nextTimeElement->time)
         {
             list_node_t* targetNode = nextTimeElement->targets->begin;
             while (targetNode != NULL)
             {
                 dsc_target_t* dscTarget = (dsc_target_t*)targetNode->data;
-                printf("target at time %d (created at %d)\n", nextTimeElement->time, gameController->ticks);
                 game_target_t* gameTarget;
                 SDL_FPoint position;
                 position.x = dscTarget->x * 480 / 480000.0f;
                 position.y = dscTarget->y * 272 / 272000.0f + 50; // TODO: figure out the positioning
-                game_target_create(&gameTarget, position);
+                game_target_create(&gameTarget, position, nextTimeElement->flyingTime);
                 game_object_add_child(gameController->object, gameTarget->object);
                 targetNode = targetNode->next;
             }

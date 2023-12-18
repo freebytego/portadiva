@@ -12,6 +12,7 @@
 
 typedef struct {
     int32_t time;
+    int32_t flyingTime;
     list_t* targets; // dsc_target_t
 } dsc_time_element_t;
 
