@@ -91,11 +91,23 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
             }
             free(parametersList);
         }
-        *out = script;
     }
 
+    *out = script;
 
     return 0;
+}
+
+void dsc_time_element_free(dsc_time_element_t* element)
+{
+    list_node_t* targetNode = element->targets->begin;
+    while (NULL != targetNode) 
+    {
+        free(targetNode->data);
+        targetNode = targetNode->next;
+    }
+    node_list_free(element->targets);
+    free(element);
 }
 
 void dsc_script_free(dsc_script_t* script)
@@ -104,14 +116,7 @@ void dsc_script_free(dsc_script_t* script)
     while (NULL != timeElementNode)
     {
         dsc_time_element_t* timeElement = (dsc_time_element_t*)timeElementNode->data;
-        list_node_t* targetNode = timeElement->targets->begin;
-        while (NULL != targetNode) 
-        {
-            free(targetNode->data);
-            targetNode = targetNode->next;
-        }
-        node_list_free(timeElement->targets);
-        free(timeElementNode->data);
+        dsc_time_element_free(timeElement);
         timeElementNode = timeElementNode->next;
     }
     node_list_free(script->timeElements);

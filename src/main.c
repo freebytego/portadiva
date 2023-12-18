@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "include/game/core/dsc/dsc.h"
-#include "include/game/core/objects/target.h"
+#include "include/game/core/objects/rhythm_controller.h"
 #include "include/engine/engine.h"
 #include "include/engine/scene_object.h"
 #include <SDL2/SDL.h>
@@ -83,17 +83,16 @@ int main(int argc, char** argv) {
     }
     engine_set_scene(engine, &scene_object_create, &scene_object_free);
 
-    game_target_t* target;
-    game_target_create(&target);
+    game_rhythm_controller_t* controller;
+    game_rhythm_controller_create_from_path(&controller, "./test.dsc");
 
-    game_object_add_child(engine->scene->object, target->object);
+    game_object_add_child(engine->scene->object, controller->object);
 
     while (engine->running)
     {
         engine_cycle(engine);
     }
 
-    // dsc_script_free(script);
     engine_free(engine);
 
     return 0;

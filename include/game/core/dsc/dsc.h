@@ -21,6 +21,7 @@ typedef struct {
 } dsc_script_t;
 
 int dsc_script_create_from_file(dsc_script_t** out, const char* filePath);
+void dsc_time_element_free(dsc_time_element_t* element);
 void dsc_script_free(dsc_script_t* script);
 
 #endif

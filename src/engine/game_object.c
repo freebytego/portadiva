@@ -1,6 +1,6 @@
 #include "include/engine/game_object.h"
 
-int game_object_create(game_object_t** out, const char* name, SDL_Point position, render_properties_t renderProperties)
+int game_object_create(game_object_t** out, const char* name, SDL_FPoint position, render_properties_t renderProperties)
 {
     static int id = 0;
 

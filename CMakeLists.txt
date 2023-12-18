@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
     src/game/core/dsc/opcode.c
     src/game/core/dsc/dsc.c
     src/game/core/objects/target.c
+    src/game/core/objects/rhythm_controller.c
     
 )
 

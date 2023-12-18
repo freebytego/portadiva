@@ -47,7 +47,7 @@ int engine_set_scene(
 
 void engine_cycle(engine_t* engine)
 {
-    game_object_cycle((*(game_object_t**)engine->scene));
+    scene_object_cycle(engine->scene);
     engine_handle_input(engine);
     engine_render(engine);
 }
@@ -68,7 +68,7 @@ void engine_render(engine_t* engine)
 {
     SDL_RenderClear(engine->renderer);
 
-    game_object_render((*(game_object_t**)engine->scene));
+    scene_object_render(engine->scene);
 
     SDL_SetRenderDrawColor(engine->renderer, 255, 255, 255, 255);
     SDL_RenderPresent(engine->renderer);

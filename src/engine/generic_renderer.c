@@ -19,7 +19,6 @@ void engine_generic_renderer_render(game_object_t* object)
         rect.y = object->position.y - rect.h / 2.0f;
     }
     }
-    printf("%f %f %f %f\n", rect.x, rect.y, rect.w, rect.h);
     SDL_SetRenderDrawColor(GLOBAL_ENGINE->renderer, 255, 0, 0, 255);
     SDL_RenderFillRectF(GLOBAL_ENGINE->renderer, &rect);
 }

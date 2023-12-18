@@ -35,7 +35,10 @@ int node_list_add_node(list_t* list, void* data)
     node->previous = list->end;
     node->next = NULL;
     
-    if (NULL == list->begin) list->begin = node;
+    if (NULL == list->begin) {
+        list->begin = node;
+        printf("CALLED\n");
+    }
     if (NULL != list->end) list->end->next = node;
     list->end = node;
     list->length++;

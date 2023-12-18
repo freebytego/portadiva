@@ -1,6 +1,6 @@
 #include "include/game/core/objects/target.h"
 
-int game_target_create(game_target_t** out)
+int game_target_create(game_target_t** out, SDL_FPoint position)
 {
     game_target_t* target = (game_target_t*)malloc(sizeof(game_target_t));
     if (NULL == target)
@@ -9,14 +9,10 @@ int game_target_create(game_target_t** out)
         return -1;
     }
 
-    SDL_Point position;
-    position.x = 100;
-    position.y = 70;
-
     render_properties_t renderProperties;
-    renderProperties.width = 30.0f;
-    renderProperties.height = 30.0f;
-    renderProperties.offsetType = RENDER_OFFSET_CENTER;
+    renderProperties.width = 16.0f;
+    renderProperties.height = 16.0f;
+    renderProperties.offsetType = RENDER_OFFSET_TOP_LEFT;
 
     if (game_object_create(&target->object, "target", position, renderProperties) != 0)
     {
@@ -24,6 +20,7 @@ int game_target_create(game_target_t** out)
         free(target);
         return -1;
     }
+    printf("Target core object at %p\n", target->object);
     game_object_set_implementation(target->object, target);
     game_object_set_cycle(target->object, &game_target_cycle);
     game_object_set_render(target->object, &game_target_render);
@@ -33,14 +30,9 @@ int game_target_create(game_target_t** out)
     return 0;
 }
 
-float dir = -0.04f;
-
 void game_target_cycle(void* target)
 {
     game_target_t* gameTarget = (game_target_t*)target;
-    gameTarget->object->renderProperties.width += dir;
-    if (gameTarget->object->renderProperties.width <= 0) dir = 0.04f;
-    else if (gameTarget->object->renderProperties.width >= 30) dir = -0.04f;
 }
 
 void game_target_render(void* target)
