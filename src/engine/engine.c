@@ -7,7 +7,7 @@ int engine_create(engine_t** out)
     engine_t* engine = (engine_t*)malloc(sizeof(engine_t));
     if (NULL == engine)
     {
-        perror("failed allocating engine");
+        fprintf(stderr, "failed allocating engine");
         return -1;
     }
 
@@ -43,6 +43,7 @@ int engine_set_scene(
         return -1;
     }
     engine->free_scene = free_scene_game_object;
+    return 0;
 }
 
 void engine_cycle(engine_t* engine)

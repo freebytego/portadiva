@@ -3,6 +3,7 @@
 #include "include/game/core/objects/rhythm_controller.h"
 #include "include/engine/engine.h"
 #include "include/engine/scene_object.h"
+#include "include/engine/texture_manager.h"
 #include <SDL2/SDL.h>
 
 #ifdef __PSP__
@@ -49,18 +50,31 @@ int main(int argc, char** argv) {
     {
         return -1;
     }
+
+    texture_manager_t* textureManager;
+    if (texture_manager_create(&textureManager, "textures") != 0)
+    {
+        return -1;
+    }
+    if (texture_manager_add_texture(textureManager, "textures.json") != 0)
+    {
+        texture_manager_free(textureManager);
+        return -1;
+    }
+
     engine_set_scene(engine, &scene_object_create, &scene_object_free);
 
-    game_rhythm_controller_t* controller;
-    game_rhythm_controller_create_from_path(&controller, "./test.dsc");
+    // game_rhythm_controller_t* controller;
+    // game_rhythm_controller_create_from_path(&controller, "./test.dsc");
 
-    game_object_add_child(engine->scene->object, controller->object);
+    // game_object_add_child(engine->scene->object, controller->object);
 
     while (engine->running)
     {
         engine_cycle(engine);
     }
 
+    texture_manager_free(textureManager);
     engine_free(engine);
 
     return 0;

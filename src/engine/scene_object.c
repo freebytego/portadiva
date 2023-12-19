@@ -5,7 +5,7 @@ int scene_object_create(scene_object_t** out)
     scene_object_t* scene = (scene_object_t*)malloc(sizeof(scene_object_t));
     if (NULL == scene)
     {
-        perror("failed to allocate a scene object");
+        fprintf(stderr, "failed to allocate a scene object");
         return -1;
     }
 
@@ -14,7 +14,7 @@ int scene_object_create(scene_object_t** out)
 
     if (game_object_create(&scene->object, "scene", position, renderProperties) != 0)
     {
-        perror("failed to create a game object for scene object");
+        fprintf(stderr, "failed to create a game object for scene object");
         free(scene);
         return -1;
     }

@@ -5,7 +5,7 @@ int game_target_create(game_target_t** out, SDL_FPoint position, int32_t flyingT
     game_target_t* target = (game_target_t*)malloc(sizeof(game_target_t));
     if (NULL == target)
     {
-        perror("failed to allocate a target");
+        fprintf(stderr, "failed to allocate a target");
         return -1;
     }
 
@@ -16,7 +16,7 @@ int game_target_create(game_target_t** out, SDL_FPoint position, int32_t flyingT
 
     if (game_object_create(&target->object, "target", position, renderProperties) != 0)
     {
-        perror("failed to create a game object for target");
+        fprintf(stderr, "failed to create a game object for target");
         free(target);
         return -1;
     }

@@ -5,7 +5,7 @@ int game_rhythm_controller_create_from_path(game_rhythm_controller_t** out, cons
     game_rhythm_controller_t* controller = (game_rhythm_controller_t*)malloc(sizeof(game_rhythm_controller_t));
     if (NULL == controller)
     {
-        perror("failed to allocate a game rhythm controller");
+        fprintf(stderr, "failed to allocate a game rhythm controller");
         return -1;
     }
 

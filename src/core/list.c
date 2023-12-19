@@ -5,7 +5,7 @@ int node_list_create(list_t** out)
     list_t* list = (list_t*)malloc(sizeof(list_t));
     if (NULL == list)
     {
-        perror("failed to allocate a list\n");
+        fprintf(stderr, "failed to allocate a list\n");
         return -1;
     }
     list->length = 0;
@@ -22,13 +22,13 @@ int node_list_add_node(list_t* list, void* data)
 {
     if (NULL == list)
     {
-        perror("tried to insert into an empty list\n");
+        fprintf(stderr, "tried to insert into an empty list\n");
         return -1;
     }
     list_node_t* node = (list_node_t*)malloc(sizeof(list_node_t));
     if (NULL == node)
     {
-        perror("failed allocating a node\n");
+        fprintf(stderr, "failed allocating a node\n");
         return -1;
     }
     node->data = data;

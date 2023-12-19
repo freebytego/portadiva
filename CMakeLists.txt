@@ -17,7 +17,8 @@ add_executable(${PROJECT_NAME}
     src/engine/game_object.c
     src/engine/scene_object.c
     src/engine/generic_renderer.c
-
+    src/engine/texture_manager.c
+    
     src/game/core/dsc/opcode.c
     src/game/core/dsc/dsc.c
     src/game/core/objects/target.c
@@ -25,14 +26,22 @@ add_executable(${PROJECT_NAME}
     
 )
 
-find_package(SDL2 REQUIRED)
+INCLUDE(FindPkgConfig)
 
-target_include_directories(${PROJECT_NAME} 
-    PRIVATE ${SDL2_INCLUDE_DIRS}
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image)
+PKG_SEARCH_MODULE(CJSON REQUIRED libcjson)
+
+target_include_directories(${PROJECT_NAME} PRIVATE 
+    ${SDL2_INCLUDE_DIRS}
+    ${SDL2_IMAGE_INCLUDE_DIRS}
+    ${CJSON_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     ${SDL2_LIBRARIES}
+    ${SDL2_IMAGE_LIBRARIES}
+    ${CJSON_LIBRARY}
 )
 
 include_directories(.)
@@ -41,6 +50,7 @@ if(PSP)
     target_link_libraries(${PROJECT_NAME} PRIVATE
         SDL2main
         SDL2
+        SDL2_image
         GL
         png
         jpeg
@@ -58,6 +68,7 @@ if(PSP)
         pspctrl
         pspdebug
         pspdisplay
+        cjson
     )
     create_pbp_file(
         TARGET ${PROJECT_NAME}

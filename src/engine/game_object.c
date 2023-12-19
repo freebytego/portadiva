@@ -7,7 +7,7 @@ int game_object_create(game_object_t** out, const char* name, SDL_FPoint positio
     game_object_t* object = (game_object_t*)malloc(sizeof(game_object_t));
     if (NULL == object)
     {
-        perror("failed allocating a game object");
+        fprintf(stderr, "failed allocating a game object");
     }
 
     object->id = id++;
@@ -16,6 +16,7 @@ int game_object_create(game_object_t** out, const char* name, SDL_FPoint positio
     object->handle_input = NULL;
     object->render = NULL;
     object->position = position;
+    object->parent = NULL;
     object->renderProperties = renderProperties;
 
     if (node_list_create(&object->children) != 0)
@@ -42,6 +43,7 @@ int game_object_add_child(game_object_t* object, game_object_t* child)
         return -1;
     }
     child->parentChildNode = object->children->end;
+    return 0;
 }
 
 void game_object_remove_child(game_object_t* object, game_object_t* child)

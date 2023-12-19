@@ -5,12 +5,12 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
     dsc_script_t* script = (dsc_script_t*)malloc(sizeof(dsc_script_t));
     if (NULL == script)
     {
-        perror("failed to allocate a dsc script");
+        fprintf(stderr, "failed to allocate a dsc script");
         return -1;
     }
     if (node_list_create(&script->timeElements) != 0)
     {
-        perror("failed to allocate a time elements list in a dsc script");
+        fprintf(stderr, "failed to allocate a time elements list in a dsc script");
         return -1;
     }
 
@@ -18,7 +18,7 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
     FILE* dscFile = fopen(filePath, "rb");
     if (dscFile == NULL)
     {
-        perror("failed to read a file\n");
+        fprintf(stderr, "failed to read a file\n");
         return -1;
     }
     fseek(dscFile, 4, SEEK_CUR);
@@ -35,7 +35,7 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
             int32_t* parametersList = (int32_t*)malloc(sizeof(int32_t) * parametersCount);
             if (NULL == parametersList)
             {
-                perror("failed to allocate an array for opcode parameters");
+                fprintf(stderr, "failed to allocate an array for opcode parameters");
                 fclose(dscFile);
                 return -1;
             }
@@ -55,7 +55,7 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
                     if (NULL == element)
                     {
                         // TODO: free script struct
-                        perror("failed to allocate a time element");
+                        fprintf(stderr, "failed to allocate a time element");
                         fclose(dscFile);
                         return -1;
                     }
@@ -65,7 +65,7 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
                     if (node_list_create(&element->targets) != 0)
                     {
                         // TODO: free script struct
-                        perror("failed to allocate a time element");
+                        fprintf(stderr, "failed to allocate a time element");
                         fclose(dscFile);
                         return -1;
                     }
@@ -90,7 +90,7 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
                     if (NULL == target)
                     {
                         // TODO: free script struct
-                        perror("failed to allocate a target");
+                        fprintf(stderr, "failed to allocate a target");
                         fclose(dscFile);
                         return -1;
                     }
