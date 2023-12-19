@@ -53,6 +53,7 @@ void texture_manager_free(texture_manager_t* manager)
     if (registeredTextureManagers->length == 0)
     {
         node_list_free(registeredTextureManagers);
+        registeredTextureManagers = NULL;
     }
     free(manager);
 }
@@ -235,4 +236,17 @@ void texture_manager_free_texture(texture_manager_t* manager, texture_t* texture
     if (NULL != texture->texture) SDL_DestroyTexture(texture->texture);
     node_list_remove_node(manager->textures, *(list_node_t**)&texture);
     free(texture);
+}
+
+texture_manager_t* texture_manager_find_registered(const char* name)
+{
+    if (NULL == registeredTextureManagers) return NULL;
+    list_node_t* managerNode = registeredTextureManagers->begin;
+    while (NULL != managerNode)
+    {
+        texture_manager_t* manager = (texture_manager_t*)managerNode->data;
+        if (strcmp(manager->name, name) == 0) return manager;
+        managerNode = managerNode->next;
+    }
+    return NULL;
 }

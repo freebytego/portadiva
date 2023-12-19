@@ -35,5 +35,6 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
 void texture_manager_free_texture(texture_manager_t* manager, texture_t* texture);
 
 static list_t* registeredTextureManagers = NULL;
+texture_manager_t* texture_manager_find_registered(const char* name);
 
 #endif

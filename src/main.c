@@ -64,10 +64,10 @@ int main(int argc, char** argv) {
 
     engine_set_scene(engine, &scene_object_create, &scene_object_free);
 
-    // game_rhythm_controller_t* controller;
-    // game_rhythm_controller_create_from_path(&controller, "./test.dsc");
+    game_rhythm_controller_t* controller;
+    game_rhythm_controller_create_from_path(&controller, "./test.dsc");
 
-    // game_object_add_child(engine->scene->object, controller->object);
+    game_object_add_child(engine->scene->object, controller->object);
 
     while (engine->running)
     {
