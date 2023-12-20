@@ -25,13 +25,15 @@ void engine_generic_renderer_render(game_object_t* object)
         SDL_RenderFillRectF(GLOBAL_ENGINE->renderer, &rect);
         return;
     }
+    rect.x += object->renderProperties.offset.x;
+    rect.y += object->renderProperties.offset.y;
     SDL_RenderCopyExF(
         GLOBAL_ENGINE->renderer, 
         object->texturePart->texture->texture, 
         &object->texturePart->source,
         &rect,
-        0.0,
-        NULL,
+        object->renderProperties.angle,
+        &object->renderProperties.center,
         SDL_FLIP_NONE
     );
 }

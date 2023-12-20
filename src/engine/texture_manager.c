@@ -207,7 +207,7 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
                 part->source.x = x->valueint;
                 part->source.y = y->valueint;
                 part->source.w = width->valuedouble;
-                part->source.h = width->valuedouble;
+                part->source.h = height->valuedouble;
                 if (node_list_add_node(texture->parts, (void*)part) != 0)
                 {
                     free(part);

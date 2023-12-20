@@ -15,8 +15,11 @@ typedef struct render_properties_t
 {
     float width;
     float height;
+    float angle;
+    SDL_FPoint offset; // kinda dumb
+    SDL_FPoint center;
     render_offset_type_t offsetType;
-} render_properties_t;
+} render_properties_t; // probably needs a create function to prevent accidental reads of unset variables here
 
 typedef struct game_object_t
 {

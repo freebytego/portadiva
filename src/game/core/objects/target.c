@@ -12,7 +12,12 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
     render_properties_t renderProperties;
     renderProperties.width = 30.0f;
     renderProperties.height = 30.0f;
+    renderProperties.angle = 0.0f;
+    renderProperties.center.x = renderProperties.width / 2.0f;
+    renderProperties.center.y = renderProperties.height / 2.0f; 
     renderProperties.offsetType = RENDER_OFFSET_CENTER;
+    renderProperties.offset.x = 0.0f; // todo: from config
+    renderProperties.offset.y = 0.0f; // todo: from config
 
     const char* type;
     switch (dscTarget->type)
@@ -33,19 +38,37 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
     position.y = dscTarget->y * 272 / 272000.0f + 50; // TODO: figure out the positioning
     if (game_object_create(&target->object, "target", position, renderProperties, texturePart) != 0)
     {
-        fprintf(stderr, "failed to create a game object for target");
         free(target);
         return -1;
     }
     
     target->createdAt = SDL_GetTicks() * 100; // targets don't know the chart start time offset
     target->flyingTime = flyingTime;
+    target->finishingAt = target->createdAt + target->flyingTime * 100;
     target->finished = 0;
+    target->progress = 0.0;
 
     game_object_set_implementation(target->object, target);
     game_object_set_cycle(target->object, &game_target_cycle);
     game_object_set_render(target->object, &game_target_render);
 
+    game_target_needle_t* needle;
+    if (game_target_needle_create(&needle, target) != 0)
+    {
+        game_object_free(target->object);
+        free(target);
+        return -1;
+    }
+
+    if (game_object_add_child(target->object, needle->object) != 0)
+    {
+        game_target_needle_free(needle);
+        game_object_free(target->object);
+        free(target);
+        return -1;
+    }
+
+    target->needle = needle;
     *out = target;
 
     return 0;
@@ -54,7 +77,9 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
 void game_target_cycle(void* target)
 {
     game_target_t* gameTarget = (game_target_t*)target;
-    if (SDL_GetTicks() * 100 >= gameTarget->createdAt + gameTarget->flyingTime * 100 && !gameTarget->finished)
+
+    gameTarget->progress = (double)(SDL_GetTicks() * 100 - gameTarget->createdAt) / (double)(gameTarget->finishingAt - gameTarget->createdAt);
+    if (gameTarget->progress >= 1.0 && !gameTarget->finished)
     {
         gameTarget->finished = 1;
     }
@@ -64,10 +89,12 @@ void game_target_render(void* target)
 {
     game_target_t* gameTarget = (game_target_t*)target;
     engine_generic_renderer_render(gameTarget->object);
+    engine_generic_renderer_render(gameTarget->needle->object);
 }
 
 void game_target_free(game_target_t* target)
 {
+    game_target_needle_free(target->needle);
     game_object_free(target->object);
     free(target);
 }

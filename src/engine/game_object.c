@@ -59,7 +59,7 @@ void game_object_free(game_object_t* object)
     list_node_t* childNode = object->children->begin;
     while (childNode != NULL)
     {
-        game_object_free((game_object_t*)childNode->data);
+        game_object_free((game_object_t*)childNode->data); // needs to call implementation destroy
         childNode = childNode->next;
     }
     node_list_free(object->children);
