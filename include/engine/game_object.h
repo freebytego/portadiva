@@ -2,6 +2,7 @@
 #define ENGINE_GAME_OBJECT_H
 
 #include "include/core/list.h"
+#include "include/engine/texture_manager.h"
 #include <stdio.h>
 #include <SDL2/SDL.h>
 
@@ -26,6 +27,7 @@ typedef struct game_object_t
     struct game_object_t* parent;
     list_node_t* parentChildNode;
     list_t* children;
+    texture_part_t* texturePart;
 
     void* implementation; // pseudo polymorphysm
     void (*cycle)(void*);
@@ -33,7 +35,7 @@ typedef struct game_object_t
     void (*render)(void*); // not every object needs to be rendered, maybe this should be a component-like thing
 } game_object_t;
 
-int game_object_create(game_object_t** out, const char* name, SDL_FPoint position, render_properties_t renderProperties);
+int game_object_create(game_object_t** out, const char* name, SDL_FPoint position, render_properties_t renderProperties, texture_part_t* texturePart);
 void game_object_set_parent(game_object_t* object, game_object_t* parent);
 int game_object_add_child(game_object_t* object, game_object_t* child);
 void game_object_remove_child(game_object_t* object, game_object_t* child);

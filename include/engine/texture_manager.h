@@ -6,25 +6,24 @@
 #include <cjson/cJSON.h>
 #include <stdio.h>
 #include "include/core/list.h"
-#include "include/engine/engine.h"
 
 typedef struct
 {
-    const char* name;
+    char* name;
     list_t* textures;
 } texture_manager_t;
 
 typedef struct
 {
-    const char* name;
-    const char* filePath;
+    char* name;
+    char* filePath;
     SDL_Texture* texture;
     list_t* parts; // texture_part_t
 } texture_t;
 
 typedef struct 
 {
-    const char* name;
+    char* name;
     texture_t* texture;
     SDL_Rect source;
 } texture_part_t;
@@ -36,5 +35,7 @@ void texture_manager_free_texture(texture_manager_t* manager, texture_t* texture
 
 static list_t* registeredTextureManagers = NULL;
 texture_manager_t* texture_manager_find_registered(const char* name);
+texture_t* texture_manager_find_texture_in_registered(const char* managerName, const char* textureName);
+texture_part_t* texture_manager_find_texture_part_in_registered(const char* managerName, const char* textureName, const char* texturePartName);
 
 #endif

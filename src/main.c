@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     {
         return -1;
     }
-    if (texture_manager_add_texture(textureManager, "textures.json") != 0)
+    if (texture_manager_add_texture(textureManager, "buttons.json") != 0)
     {
         texture_manager_free(textureManager);
         return -1;

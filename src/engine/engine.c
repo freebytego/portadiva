@@ -21,6 +21,15 @@ int engine_create(engine_t** out)
         0
     );
     engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_ACCELERATED);
+
+    // TODO: validations here
+
+    int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
+    if(!( IMG_Init( imgFlags ) & imgFlags ))
+    {
+        // uh oh
+    }
+
     engine->running = 1;
 
     *out = engine;

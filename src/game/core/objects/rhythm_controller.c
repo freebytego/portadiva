@@ -11,7 +11,7 @@ int game_rhythm_controller_create_from_path(game_rhythm_controller_t** out, cons
 
     SDL_FPoint position;
     render_properties_t renderProperties;
-    if (game_object_create(&controller->object, "rhythm controller", position, renderProperties) != 0)
+    if (game_object_create(&controller->object, "rhythm controller", position, renderProperties, NULL) != 0)
     {
         free(controller);
         return -1;
@@ -60,10 +60,7 @@ void game_rhythm_controller_cycle(void* controller)
             {
                 dsc_target_t* dscTarget = (dsc_target_t*)targetNode->data;
                 game_target_t* gameTarget;
-                SDL_FPoint position;
-                position.x = dscTarget->x * 480 / 480000.0f;
-                position.y = dscTarget->y * 272 / 272000.0f + 50; // TODO: figure out the positioning
-                game_target_create(&gameTarget, position, nextTimeElement->flyingTime);
+                game_target_create(&gameTarget, dscTarget, nextTimeElement->flyingTime);
                 game_object_add_child(gameController->object, gameTarget->object);
                 targetNode = targetNode->next;
             }

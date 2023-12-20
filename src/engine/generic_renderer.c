@@ -19,6 +19,19 @@ void engine_generic_renderer_render(game_object_t* object)
         rect.y = object->position.y - rect.h / 2.0f;
     }
     }
-    SDL_SetRenderDrawColor(GLOBAL_ENGINE->renderer, 255, 0, 0, 255);
-    SDL_RenderFillRectF(GLOBAL_ENGINE->renderer, &rect);
+    if (NULL == object->texturePart)
+    {
+        SDL_SetRenderDrawColor(GLOBAL_ENGINE->renderer, 255, 0, 0, 255);
+        SDL_RenderFillRectF(GLOBAL_ENGINE->renderer, &rect);
+        return;
+    }
+    SDL_RenderCopyExF(
+        GLOBAL_ENGINE->renderer, 
+        object->texturePart->texture->texture, 
+        &object->texturePart->source,
+        &rect,
+        0.0,
+        NULL,
+        SDL_FLIP_NONE
+    );
 }

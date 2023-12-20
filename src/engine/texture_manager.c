@@ -1,4 +1,5 @@
 #include "include/engine/texture_manager.h"
+#include "include/engine/engine.h"
 
 int texture_manager_create(texture_manager_t** out, const char* name)
 {
@@ -13,18 +14,20 @@ int texture_manager_create(texture_manager_t** out, const char* name)
         free(manager);
         return -1;
     }
-    manager->name = name;
+
+    manager->name = (char*)malloc(strlen(name) + 1);
+    strcpy(manager->name, name);
 
     if (NULL == registeredTextureManagers)
     {
         if (node_list_create(&registeredTextureManagers) != 0)
         {
+            free(manager->name);
             free(manager);
             return -1;
         }
     }
     node_list_add_node(registeredTextureManagers, manager);
-
     *out = manager;
     return 0;
 }
@@ -55,6 +58,7 @@ void texture_manager_free(texture_manager_t* manager)
         node_list_free(registeredTextureManagers);
         registeredTextureManagers = NULL;
     }
+    free(manager->name);
     free(manager);
 }
 
@@ -115,7 +119,14 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
     textureName = cJSON_GetObjectItem(textureDefinitionJson, "name");
     if (cJSON_IsString(textureName) && NULL != textureName->valuestring)
     {
-        texture->name = textureName->valuestring;
+        texture->name = (char*)malloc(strlen(textureName->valuestring) + 1);
+        if (NULL == texture->name)
+        {
+            fprintf(stderr, "failed to allocate a texture name\n");
+            retval = -1;
+            goto free_texture;
+        }
+        strcpy(texture->name, textureName->valuestring);
     }
     else
     {
@@ -126,13 +137,20 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
     textureFilePath = cJSON_GetObjectItem(textureDefinitionJson, "textureFilePath");
     if (cJSON_IsString(textureFilePath) && NULL != textureFilePath->valuestring)
     {
-        texture->filePath = textureFilePath->valuestring;
+        texture->filePath = (char*)malloc(strlen(textureFilePath->valuestring) + 1);
+        if (NULL == texture->filePath)
+        {
+            fprintf(stderr, "failed to allocate a texture filePath\n");
+            retval = -1;
+            goto free_texture_name;
+        }
+        strcpy(texture->filePath, textureFilePath->valuestring);
         SDL_Surface* surface = IMG_Load(texture->filePath);
         if (NULL == surface)
         {
             fprintf(stderr, "failed to create a surface\n");
             retval = -1;
-            goto free_texture;
+            goto free_texture_file_path;
         }
         texture->texture = SDL_CreateTextureFromSurface(GLOBAL_ENGINE->renderer, surface);
         SDL_FreeSurface(surface);
@@ -140,14 +158,14 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
         {
             fprintf(stderr, "failed to create a texture from surface: %s\n", SDL_GetError());
             retval = -1;
-            goto free_texture;
+            goto free_texture_file_path;
         }
     }
     else
     {
         fprintf(stderr, "invalid format for 'textureFilePath' attribute in the texture definition json at '%s'\n", textureConfigPath);
         retval = -1;
-        goto free_sdl_texture;
+        goto free_texture_name;
     }
     textureParts = cJSON_GetObjectItem(textureDefinitionJson, "parts");
     if (cJSON_IsArray(textureParts))
@@ -176,7 +194,16 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
                     goto free_texture_parts;
                 }
                 part->texture = texture;
-                part->name = name->valuestring;
+                part->name = (char*)malloc(strlen(name->valuestring) + 1);
+                if (NULL == part->name)
+                {
+                    fprintf(stderr, "failed to allocate a texture part name\n");
+                    retval = -1;
+                    free(part);
+                    goto free_texture_parts;
+                }
+                strcpy(part->name, name->valuestring);
+                // todo char malloc validation
                 part->source.x = x->valueint;
                 part->source.y = y->valueint;
                 part->source.w = width->valuedouble;
@@ -209,12 +236,18 @@ free_texture_parts:
     texturePartNode = texture->parts->begin;
     while (NULL != texturePartNode)
     {
-        free(texturePartNode->data);
+        texture_part_t* part = (texture_part_t*)texturePartNode->data;
+        free(part->name);
+        free(part);
         texturePartNode = texturePartNode->next;
     }
     node_list_free(texture->parts);
 free_sdl_texture:
     SDL_DestroyTexture(texture->texture);
+free_texture_file_path:
+    free(texture->filePath);
+free_texture_name:
+    free(texture->name);
 free_texture:
     free(texture);
 free_json:
@@ -229,12 +262,15 @@ void texture_manager_free_texture(texture_manager_t* manager, texture_t* texture
     list_node_t* partIterNode = texture->parts->begin;
     while (NULL != partIterNode)
     {
-        free(partIterNode->data);
+        texture_part_t* part = (texture_part_t*)partIterNode->data;
+        free(part->name);
+        free(part);
         partIterNode = partIterNode->next;
     }
     node_list_free(texture->parts);
     if (NULL != texture->texture) SDL_DestroyTexture(texture->texture);
     node_list_remove_node(manager->textures, *(list_node_t**)&texture);
+    free(texture->name);
     free(texture);
 }
 
@@ -247,6 +283,46 @@ texture_manager_t* texture_manager_find_registered(const char* name)
         texture_manager_t* manager = (texture_manager_t*)managerNode->data;
         if (strcmp(manager->name, name) == 0) return manager;
         managerNode = managerNode->next;
+    }
+    return NULL;
+}
+
+texture_t* texture_manager_find_texture_in_registered(const char* managerName, const char* textureName)
+{
+    texture_manager_t* manager = texture_manager_find_registered(managerName);
+    if (NULL == manager)
+    {
+        return NULL;
+    }
+    list_node_t* textureNode = manager->textures->begin;
+    while (NULL != textureNode)
+    {
+        texture_t* texture = (texture_t*)textureNode->data;
+        if (strcmp(texture->name, textureName) == 0)
+        {
+            return texture;
+        }
+        textureNode = textureNode->next;
+    }
+    return NULL;
+}
+
+texture_part_t* texture_manager_find_texture_part_in_registered(const char* managerName, const char* textureName, const char* texturePartName)
+{
+    texture_t* texture = texture_manager_find_texture_in_registered(managerName, textureName);
+    if (NULL == texture)
+    {
+        return NULL;
+    }
+    list_node_t* texturePartNode = texture->parts->begin;
+    while (NULL != texturePartNode)
+    {
+        texture_part_t* texturePart = (texture_part_t*)texturePartNode->data;
+        if (strcmp(texturePart->name, texturePartName) == 0)
+        {
+            return texturePart;
+        }
+        texturePartNode = texturePartNode->next;
     }
     return NULL;
 }

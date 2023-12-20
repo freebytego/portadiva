@@ -6,6 +6,7 @@
 #include "include/engine/game_object.h"
 #include "include/game/core/dsc/target.h"
 #include "include/engine/generic_renderer.h"
+#include "include/engine/texture_manager.h"
 #include <stdbool.h>
 
 typedef struct game_target_t
@@ -19,7 +20,7 @@ typedef struct game_target_t
     
 } game_target_t;
 
-int game_target_create(game_target_t** out, SDL_FPoint position, int32_t flyingTime);
+int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t flyingTime);
 void game_target_cycle(void* target);
 void game_target_render(void* target);
 void game_target_free(game_target_t* target);

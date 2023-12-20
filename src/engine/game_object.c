@@ -1,6 +1,6 @@
 #include "include/engine/game_object.h"
 
-int game_object_create(game_object_t** out, const char* name, SDL_FPoint position, render_properties_t renderProperties)
+int game_object_create(game_object_t** out, const char* name, SDL_FPoint position, render_properties_t renderProperties, texture_part_t* texturePart)
 {
     static int id = 0;
 
@@ -18,6 +18,7 @@ int game_object_create(game_object_t** out, const char* name, SDL_FPoint positio
     object->position = position;
     object->parent = NULL;
     object->renderProperties = renderProperties;
+    object->texturePart = texturePart;
 
     if (node_list_create(&object->children) != 0)
     {

@@ -12,7 +12,7 @@ int scene_object_create(scene_object_t** out)
     SDL_FPoint position;
     render_properties_t renderProperties;
 
-    if (game_object_create(&scene->object, "scene", position, renderProperties) != 0)
+    if (game_object_create(&scene->object, "scene", position, renderProperties, NULL) != 0)
     {
         fprintf(stderr, "failed to create a game object for scene object");
         free(scene);

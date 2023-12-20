@@ -1,6 +1,6 @@
 #include "include/game/core/objects/target.h"
 
-int game_target_create(game_target_t** out, SDL_FPoint position, int32_t flyingTime)
+int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t flyingTime)
 {
     game_target_t* target = (game_target_t*)malloc(sizeof(game_target_t));
     if (NULL == target)
@@ -10,11 +10,28 @@ int game_target_create(game_target_t** out, SDL_FPoint position, int32_t flyingT
     }
 
     render_properties_t renderProperties;
-    renderProperties.width = 16.0f;
-    renderProperties.height = 16.0f;
+    renderProperties.width = 30.0f;
+    renderProperties.height = 30.0f;
     renderProperties.offsetType = RENDER_OFFSET_CENTER;
 
-    if (game_object_create(&target->object, "target", position, renderProperties) != 0)
+    const char* type;
+    switch (dscTarget->type)
+    {
+        case 0: case 4: case 18: type = "triangle_black"; break;
+        case 1: case 5: case 19: type = "square_black"; break;
+        case 2: case 6: case 20: type = "cross_black"; break;
+        case 3: case 7: case 21: type = "circle_black"; break;
+        case 12: case 14: type = "slide_left_black"; break;
+        case 13: case 16: type = "slide_right_black"; break;
+        default: type = "triangle_black"; break; // temp
+    }
+
+    texture_part_t* texturePart = texture_manager_find_texture_part_in_registered("textures", "buttons", type);
+    
+    SDL_FPoint position;
+    position.x = dscTarget->x * 480 / 480000.0f;
+    position.y = dscTarget->y * 272 / 272000.0f + 50; // TODO: figure out the positioning
+    if (game_object_create(&target->object, "target", position, renderProperties, texturePart) != 0)
     {
         fprintf(stderr, "failed to create a game object for target");
         free(target);
