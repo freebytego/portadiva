@@ -35,7 +35,7 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
     
     SDL_FPoint position;
     position.x = dscTarget->x * 480 / 480000.0f;
-    position.y = dscTarget->y * 272 / 272000.0f + 50; // TODO: figure out the positioning
+    position.y = dscTarget->y * 272 / 272000.0f; // TODO: figure out the positioning
     if (game_object_create(&target->object, "target", position, renderProperties, texturePart) != 0)
     {
         free(target);
@@ -47,6 +47,7 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
     target->finishingAt = target->createdAt + target->flyingTime * 100;
     target->finished = 0;
     target->progress = 0.0;
+    target->dscTarget = dscTarget;
 
     game_object_set_implementation(target->object, target);
     game_object_set_cycle(target->object, (void (*)(void*))&game_target_cycle);
@@ -69,7 +70,26 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
         return -1;
     }
 
+    game_target_real_t* real;
+    if (game_target_real_create(&real, target) != 0)
+    {
+        game_target_needle_free(needle);
+        game_object_free(target->object);
+        free(target);
+        return -1;
+    }
+
+    if (game_object_add_child(target->object, real->object) != 0)
+    {
+        game_target_real_free(real);
+        game_target_needle_free(needle);
+        game_object_free(target->object);
+        free(target);
+        return -1;
+    }
+
     target->needle = needle;
+    target->real = real;
     *out = target;
 
     return 0;
@@ -88,10 +108,12 @@ void game_target_render(game_target_t* target)
 {
     engine_generic_renderer_render(target->object);
     engine_generic_renderer_render(target->needle->object);
+    engine_generic_renderer_render(target->real->object);
 }
 
 void game_target_free(game_target_t* target)
 {
+    game_target_real_free(target->real);
     game_target_needle_free(target->needle);
     game_object_free(target->object);
     free(target);

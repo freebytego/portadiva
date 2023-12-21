@@ -97,8 +97,9 @@ int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
                     target->time = lastReadTime;
                     target->type = parametersList[0];
                     target->x = parametersList[1];
-                    target->y = parametersList[3];
-                    target->angle = parametersList[4];
+                    target->y = parametersList[2];
+                    target->angle = parametersList[3];
+                    target->distance = parametersList[4];
                     target->amplitude = parametersList[5]; 
                     target->frequency = parametersList[6];
                     node_list_add_node(lastTimeElement->targets, target);

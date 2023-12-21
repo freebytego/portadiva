@@ -8,6 +8,7 @@
 #include "include/engine/generic_renderer.h"
 #include "include/engine/texture_manager.h"
 #include "include/game/core/objects/target_needle.h"
+#include "include/game/core/objects/target_real.h"
 #include <stdbool.h>
 
 typedef struct game_target_t
@@ -15,6 +16,7 @@ typedef struct game_target_t
     game_object_t* object;
     dsc_target_t* dscTarget;
     game_target_needle_t* needle;
+    game_target_real_t* real;
 
     struct game_target_t* connectedTarget;
     int32_t createdAt;

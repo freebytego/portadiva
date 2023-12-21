@@ -23,6 +23,7 @@ add_executable(${PROJECT_NAME}
     src/game/core/dsc/dsc.c
     src/game/core/objects/target.c
     src/game/core/objects/target_needle.c
+    src/game/core/objects/target_real.c
     src/game/core/objects/rhythm_controller.c
     
 )
@@ -43,6 +44,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${SDL2_LIBRARIES}
     ${SDL2IMAGE_LIBRARIES}
     ${CJSON_LIBRARIES}
+    m
 )
 
 include_directories(.)
