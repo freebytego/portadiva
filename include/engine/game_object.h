@@ -35,7 +35,8 @@ typedef struct game_object_t
     void* implementation; // pseudo polymorphysm
     void (*cycle)(void*);
     void (*handle_input)(void*);
-    void (*render)(void*); // not every object needs to be rendered, maybe this should be a component-like thing
+    void (*render)(void*);
+    void (*free)(void*);
 } game_object_t;
 
 int game_object_create(game_object_t** out, const char* name, SDL_FPoint position, render_properties_t renderProperties, texture_part_t* texturePart);
@@ -47,6 +48,7 @@ void game_object_set_implementation(game_object_t* object, void* implementation)
 void game_object_set_cycle(game_object_t* object, void (*cycle)(void*));
 void game_object_set_handle_input(game_object_t* object, void (*handle_input)(void*));
 void game_object_set_render(game_object_t* object, void (*render)(void*));
+void game_object_set_free(game_object_t* object, void (*free)(void*));
 void game_object_cycle(game_object_t* object);
 void game_object_render(game_object_t* object);
 

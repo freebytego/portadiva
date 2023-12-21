@@ -35,14 +35,14 @@ PKG_SEARCH_MODULE(CJSON REQUIRED libcjson)
 
 target_include_directories(${PROJECT_NAME} PRIVATE 
     ${SDL2_INCLUDE_DIRS}
-    ${SDL2_IMAGE_INCLUDE_DIRS}
-    ${CJSON_INCLUDE_DIR}
+    ${SDL2IMAGE_INCLUDE_DIRS}
+    ${CJSON_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     ${SDL2_LIBRARIES}
-    ${SDL2_IMAGE_LIBRARIES}
-    ${CJSON_LIBRARY}
+    ${SDL2IMAGE_LIBRARIES}
+    ${CJSON_LIBRARIES}
 )
 
 include_directories(.)

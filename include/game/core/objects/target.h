@@ -26,8 +26,8 @@ typedef struct game_target_t
 } game_target_t;
 
 int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t flyingTime);
-void game_target_cycle(void* target);
-void game_target_render(void* target);
+void game_target_cycle(game_target_t* target);
+void game_target_render(game_target_t* target);
 void game_target_free(game_target_t* target);
 
 #endif

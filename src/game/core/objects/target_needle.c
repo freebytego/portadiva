@@ -31,7 +31,8 @@ int game_target_needle_create(game_target_needle_t** out, game_target_t* target)
     }
 
     game_object_set_implementation(targetNeedle->object, targetNeedle);
-    game_object_set_cycle(targetNeedle->object, &game_target_needle_cycle);
+    game_object_set_cycle(targetNeedle->object, (void (*)(void*))&game_target_needle_cycle);
+    game_object_set_free(targetNeedle->object, (void (*)(void*))&game_target_needle_free);
 
     targetNeedle->target = target;
 
@@ -40,16 +41,14 @@ int game_target_needle_create(game_target_needle_t** out, game_target_t* target)
     return 0;
 }
 
-void game_target_needle_cycle(void* targetNeedle)
+void game_target_needle_cycle(game_target_needle_t* targetNeedle)
 {
-    game_target_needle_t* gameTargetNeedle = (game_target_needle_t*)targetNeedle;
-    gameTargetNeedle->object->renderProperties.angle = 360.0 * gameTargetNeedle->target->progress;
+    targetNeedle->object->renderProperties.angle = 360.0 * targetNeedle->target->progress;
 }
 
-void game_target_needle_render(void* targetNeedle)
+void game_target_needle_render(game_target_needle_t* targetNeedle)
 {
-    game_target_needle_t* gameTargetNeedle = (game_target_needle_t*)targetNeedle;
-    engine_generic_renderer_render(gameTargetNeedle->object);
+    engine_generic_renderer_render(targetNeedle->object);
 }
 
 void game_target_needle_free(game_target_needle_t* targetNeedle)

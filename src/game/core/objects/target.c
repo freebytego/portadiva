@@ -49,8 +49,9 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
     target->progress = 0.0;
 
     game_object_set_implementation(target->object, target);
-    game_object_set_cycle(target->object, &game_target_cycle);
-    game_object_set_render(target->object, &game_target_render);
+    game_object_set_cycle(target->object, (void (*)(void*))&game_target_cycle);
+    game_object_set_render(target->object, (void (*)(void*))&game_target_render);
+    game_object_set_free(target->object, (void (*)(void*))&game_target_free);
 
     game_target_needle_t* needle;
     if (game_target_needle_create(&needle, target) != 0)
@@ -74,22 +75,19 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
     return 0;
 }
 
-void game_target_cycle(void* target)
+void game_target_cycle(game_target_t* target)
 {
-    game_target_t* gameTarget = (game_target_t*)target;
-
-    gameTarget->progress = (double)(SDL_GetTicks() * 100 - gameTarget->createdAt) / (double)(gameTarget->finishingAt - gameTarget->createdAt);
-    if (gameTarget->progress >= 1.0 && !gameTarget->finished)
+    target->progress = (double)(SDL_GetTicks() * 100 - target->createdAt) / (double)(target->finishingAt - target->createdAt);
+    if (target->progress >= 1.0 && !target->finished)
     {
-        gameTarget->finished = 1;
+        target->finished = 1;
     }
 }
 
-void game_target_render(void* target)
+void game_target_render(game_target_t* target)
 {
-    game_target_t* gameTarget = (game_target_t*)target;
-    engine_generic_renderer_render(gameTarget->object);
-    engine_generic_renderer_render(gameTarget->needle->object);
+    engine_generic_renderer_render(target->object);
+    engine_generic_renderer_render(target->needle->object);
 }
 
 void game_target_free(game_target_t* target)

@@ -20,6 +20,7 @@ int scene_object_create(scene_object_t** out)
     }
     game_object_set_implementation(scene->object, scene);
     game_object_set_render(scene->object, &scene_object_render);
+    game_object_set_free(scene->object, (void(*)(void*))&scene_object_free);    
 
     scene->cycle = NULL;
 
@@ -30,6 +31,7 @@ int scene_object_create(scene_object_t** out)
 
 void scene_object_cycle(void* scene)
 {
+    if (NULL == scene) return;
     scene_object_t* sceneObject = (scene_object_t*)scene;
     if (NULL != sceneObject->cycle)
     {
@@ -45,6 +47,7 @@ void scene_object_cycle(void* scene)
 
 void scene_object_render(void* scene)
 {
+    if (NULL == scene) return;
     scene_object_t* sceneObject = (scene_object_t*)scene;
     list_node_t* child = sceneObject->object->children->begin;
     while (NULL != child)
@@ -56,6 +59,7 @@ void scene_object_render(void* scene)
 
 void scene_object_free(scene_object_t* scene)
 {
+    if (NULL == scene) return;
     game_object_free(scene->object);
     free(scene);
 }

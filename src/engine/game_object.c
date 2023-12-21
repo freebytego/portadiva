@@ -15,6 +15,7 @@ int game_object_create(game_object_t** out, const char* name, SDL_FPoint positio
     object->cycle = NULL;
     object->handle_input = NULL;
     object->render = NULL;
+    object->free = NULL;
     object->position = position;
     object->parent = NULL;
     object->renderProperties = renderProperties;
@@ -59,7 +60,15 @@ void game_object_free(game_object_t* object)
     list_node_t* childNode = object->children->begin;
     while (childNode != NULL)
     {
-        game_object_free((game_object_t*)childNode->data); // needs to call implementation destroy
+        game_object_t* child = (game_object_t*)childNode->data;
+        if (NULL != child->free)
+        {
+            child->free(child->implementation);
+        }
+        else
+        {
+            game_object_free(child);
+        }
         childNode = childNode->next;
     }
     node_list_free(object->children);
@@ -78,6 +87,11 @@ void game_object_set_implementation(game_object_t* object, void* implementation)
 void game_object_set_cycle(game_object_t* object, void (*cycle)(void*))
 {
     object->cycle = cycle;
+}
+
+void game_object_set_free(game_object_t* object, void (*free)(void*))
+{
+    object->free = free;
 }
 
 void game_object_set_handle_input(game_object_t* object, void (*handle_input)(void*))

@@ -69,10 +69,10 @@ int main(int argc, char** argv) {
 
     game_object_add_child(engine->scene->object, controller->object);
 
-    while (engine->running)
-    {
-        engine_cycle(engine);
-    }
+    // while (engine->running)
+    // {
+    //     engine_cycle(engine);
+    // }
 
     texture_manager_free(textureManager);
     engine_free(engine);

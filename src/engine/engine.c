@@ -31,6 +31,7 @@ int engine_create(engine_t** out)
     }
 
     engine->running = 1;
+    engine->scene = NULL;
 
     *out = engine;
     GLOBAL_ENGINE = engine;

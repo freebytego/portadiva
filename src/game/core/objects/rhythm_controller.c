@@ -24,8 +24,10 @@ int game_rhythm_controller_create_from_path(game_rhythm_controller_t** out, cons
     }
 
     game_object_set_implementation(controller->object, controller);
-    game_object_set_cycle(controller->object, &game_rhythm_controller_cycle);
-    game_object_set_render(controller->object, &game_rhythm_controller_render);
+    game_object_set_cycle(controller->object, (void (*)(void*))&game_rhythm_controller_cycle);
+    game_object_set_render(controller->object, (void (*)(void*))&game_rhythm_controller_render);
+    game_object_set_free(controller->object, (void (*)(void*))&game_rhythm_controller_free);
+
     controller->startedAt = SDL_GetTicks();
 
     *out = controller;
@@ -33,12 +35,11 @@ int game_rhythm_controller_create_from_path(game_rhythm_controller_t** out, cons
     return 0;
 }
 
-void game_rhythm_controller_cycle(void* controller)
+void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
 {
-    game_rhythm_controller_t* gameController = (game_rhythm_controller_t*)controller;
-    gameController->ticks = (SDL_GetTicks() - gameController->startedAt) * 100;
+    controller->ticks = (SDL_GetTicks() - controller->startedAt) * 100;
     
-    list_node_t* childNode = gameController->object->children->begin;
+    list_node_t* childNode = controller->object->children->begin;
     while (NULL != childNode)
     {
         game_target_t* child = (game_target_t*)((game_object_t*)childNode->data)->implementation; // lmao
@@ -49,11 +50,11 @@ void game_rhythm_controller_cycle(void* controller)
         }
     }
 
-    list_node_t* nextTimeElementNode = gameController->script->timeElements->begin;
+    list_node_t* nextTimeElementNode = controller->script->timeElements->begin;
     if (NULL != nextTimeElementNode)
     {
         dsc_time_element_t* nextTimeElement = (dsc_time_element_t*)nextTimeElementNode->data;
-        if (gameController->ticks > nextTimeElement->time)
+        if (controller->ticks > nextTimeElement->time)
         {
             list_node_t* targetNode = nextTimeElement->targets->begin;
             while (targetNode != NULL)
@@ -61,10 +62,10 @@ void game_rhythm_controller_cycle(void* controller)
                 dsc_target_t* dscTarget = (dsc_target_t*)targetNode->data;
                 game_target_t* gameTarget;
                 game_target_create(&gameTarget, dscTarget, nextTimeElement->flyingTime);
-                game_object_add_child(gameController->object, gameTarget->object);
+                game_object_add_child(controller->object, gameTarget->object);
                 targetNode = targetNode->next;
             }
-            node_list_remove_node(gameController->script->timeElements, gameController->script->timeElements->begin);
+            node_list_remove_node(controller->script->timeElements, controller->script->timeElements->begin);
             dsc_time_element_free(nextTimeElement);
         }
     }
@@ -77,10 +78,9 @@ void game_rhythm_controller_free(game_rhythm_controller_t* controller)
     free(controller);
 }
 
-void game_rhythm_controller_render(void* controller)
+void game_rhythm_controller_render(game_rhythm_controller_t* controller)
 {
-    game_rhythm_controller_t* gameController = (game_rhythm_controller_t*)controller;
-    list_node_t* child = gameController->object->children->begin;
+    list_node_t* child = controller->object->children->begin;
     while (NULL != child)
     {
         game_object_render((game_object_t*)child->data);
