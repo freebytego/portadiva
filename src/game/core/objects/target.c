@@ -70,26 +70,9 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
         return -1;
     }
 
-    game_target_real_t* real;
-    if (game_target_real_create(&real, target) != 0)
-    {
-        game_target_needle_free(needle);
-        game_object_free(target->object);
-        free(target);
-        return -1;
-    }
-
-    if (game_object_add_child(target->object, real->object) != 0)
-    {
-        game_target_real_free(real);
-        game_target_needle_free(needle);
-        game_object_free(target->object);
-        free(target);
-        return -1;
-    }
-
     target->needle = needle;
-    target->real = real;
+    target->real = NULL;
+
     *out = target;
 
     return 0;
@@ -108,7 +91,30 @@ void game_target_render(game_target_t* target)
 {
     engine_generic_renderer_render(target->object);
     engine_generic_renderer_render(target->needle->object);
-    engine_generic_renderer_render(target->real->object);
+}
+
+int game_target_create_target_real(game_target_t* target)
+{
+    game_target_real_t* real;
+    if (game_target_real_create(&real, target) != 0)
+    {
+        game_target_needle_free(target->needle);
+        game_object_free(target->object);
+        free(target);
+        return -1;
+    }
+    if (game_object_add_child(((game_rhythm_controller_t*)target->object->parent->implementation)->targetRealRenderer->object, real->object) != 0)
+    {
+        game_target_real_free(real);
+        game_target_needle_free(target->needle);
+        game_object_free(target->object);
+        free(target);
+        return -1;
+    }
+
+    target->real = real;
+
+    return 0;
 }
 
 void game_target_free(game_target_t* target)

@@ -24,6 +24,7 @@ add_executable(${PROJECT_NAME}
     src/game/core/objects/target.c
     src/game/core/objects/target_needle.c
     src/game/core/objects/target_real.c
+    src/game/core/objects/target_real_renderer.c
     src/game/core/objects/rhythm_controller.c
     
 )

@@ -57,8 +57,6 @@ int game_target_real_create(game_target_real_t** out, game_target_t* target)
         targetReal->frequency *= -1;
     }
 
-    printf("%d %d\n", targetReal->target->dscTarget->frequency, targetReal->target->dscTarget->amplitude);
-
     *out = targetReal;
 
     return 0;
@@ -69,12 +67,8 @@ void game_target_real_cycle(game_target_real_t* targetReal)
     double progress = 1.0 - targetReal->target->progress;
     float x = progress * targetReal->distance;
     float y = sin(progress * 3.14f * targetReal->frequency) / 36.0f * targetReal->amplitude;
-    // float y = 0.f;
-
     targetReal->object->position.x = (sin(targetReal->angle) * x + cos(targetReal->angle) * y) + targetReal->target->object->position.x;
     targetReal->object->position.y = (cos(targetReal->angle) * -x - sin(targetReal->angle) * y) + targetReal->target->object->position.y;
-
-    printf("%f | %d | %f %f | %f %f\n", progress, targetReal->amplitude, x, y, targetReal->object->position.x, targetReal->object->position.y);
 }
 
 void game_target_real_render(game_target_real_t* targetReal)

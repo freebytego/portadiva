@@ -8,6 +8,7 @@
 #include "include/engine/generic_renderer.h"
 #include "include/engine/texture_manager.h"
 #include "include/game/core/objects/target_needle.h"
+#include "include/game/core/objects/rhythm_controller.h"
 #include "include/game/core/objects/target_real.h"
 #include <stdbool.h>
 
@@ -31,5 +32,6 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
 void game_target_cycle(game_target_t* target);
 void game_target_render(game_target_t* target);
 void game_target_free(game_target_t* target);
+int game_target_create_target_real(game_target_t* target);
 
 #endif

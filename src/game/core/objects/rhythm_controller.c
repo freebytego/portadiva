@@ -63,6 +63,7 @@ void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
                 game_target_t* gameTarget;
                 game_target_create(&gameTarget, dscTarget, nextTimeElement->flyingTime);
                 game_object_add_child(controller->object, gameTarget->object);
+                game_target_create_target_real(gameTarget);
                 targetNode = targetNode->next;
             }
             node_list_remove_node(controller->script->timeElements, controller->script->timeElements->begin);
@@ -71,8 +72,14 @@ void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
     }
 }
 
+void game_rhythm_controller_set_target_real_renderer(game_rhythm_controller_t* controller, game_target_real_renderer_t* renderer)
+{
+    controller->targetRealRenderer = renderer;
+}
+
 void game_rhythm_controller_free(game_rhythm_controller_t* controller)
 {
+    game_target_real_renderer_free(controller->targetRealRenderer);
     dsc_script_free(controller->script);
     game_object_free(controller->object);
     free(controller);
