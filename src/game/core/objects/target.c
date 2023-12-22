@@ -27,9 +27,9 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
     switch (dscTarget->type)
     {
         case 0: case 4: case 18: type = "triangle_black"; break;
-        case 1: case 5: case 19: type = "square_black"; break;
+        case 1: case 5: case 19: type = "circle_black"; break;
         case 2: case 6: case 20: type = "cross_black"; break;
-        case 3: case 7: case 21: type = "circle_black"; break;
+        case 3: case 7: case 21: type = "square_black"; break;
         case 12: case 14: type = "slide_left_black"; break;
         case 13: case 16: type = "slide_right_black"; break;
         default: type = "triangle_black"; break; // temp

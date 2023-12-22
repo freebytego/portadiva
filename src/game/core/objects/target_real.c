@@ -26,9 +26,9 @@ int game_target_real_create(game_target_real_t** out, game_target_t* target)
     switch (target->dscTarget->type)
     {
         case 0: case 4: case 18: type = "triangle_real"; break;
-        case 1: case 5: case 19: type = "square_real"; break;
+        case 1: case 5: case 19: type = "circle_real"; break;
         case 2: case 6: case 20: type = "cross_real"; break;
-        case 3: case 7: case 21: type = "circle_real"; break;
+        case 3: case 7: case 21: type = "square_real"; break;
         case 12: case 14: type = "slide_left_real"; break;
         case 13: case 16: type = "slide_right_real"; break;
         default: type = "triangle_real"; break;
