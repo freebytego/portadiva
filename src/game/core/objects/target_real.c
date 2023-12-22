@@ -36,8 +36,6 @@ int game_target_real_create(game_target_real_t** out, game_target_t* target)
 
     texture_part_t* texturePart = texture_manager_find_texture_part_in_registered("textures", "buttons", type);
     
-    printf("%p\n", targetReal);
-
     if (game_object_create(&targetReal->object, "target real", target->object->position, renderProperties, texturePart) != 0)
     {
         fprintf(stderr, "failed to create a game object for target real");
@@ -80,8 +78,6 @@ void game_target_real_render(game_target_real_t* targetReal)
 
 void game_target_real_free(game_target_real_t* targetReal)
 {
-    printf("called\n");
-    printf("%p CHILD\n", targetReal->object->children);
     game_object_free(targetReal->object);
     free(targetReal);
 }

@@ -151,7 +151,6 @@ int game_target_create_target_real(game_target_t* target)
 
 void game_target_free(game_target_t* target)
 {
-    printf("called\n");
     game_target_real_free(target->real);
     game_target_needle_free(target->needle);
     game_object_free(target->object);

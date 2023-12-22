@@ -6,7 +6,6 @@ void engine_generic_renderer_render(game_object_t* object)
     rect.w = object->renderProperties.width;
     rect.h = object->renderProperties.height;
 
-    printf("%s -> %f x %f\n", object->name, rect.w, rect.h);
     switch (object->renderProperties.offsetType)
     {
     case RENDER_OFFSET_TOP_LEFT:

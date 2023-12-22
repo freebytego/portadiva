@@ -269,7 +269,6 @@ void texture_manager_free_texture(texture_manager_t* manager, texture_t* texture
     }
     node_list_free(texture->parts);
     if (NULL != texture->texture) SDL_DestroyTexture(texture->texture);
-    printf("%p addr - %p\n", *(list_node_t**)&texture, texture);
 
     list_node_t* textureNode = manager->textures->begin;
     while (NULL != textureNode)
