@@ -37,6 +37,14 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
 
 void game_target_real_renderer_free(game_target_real_renderer_t* renderer)
 {
+    // game_object_free will free all its children, so it will kill all of the real targets before the target object can do so.
+    // to prevent this we must unparent all of children
+    list_node_t* childNode = renderer->object->children->begin;
+    while (NULL != childNode)
+    {
+        game_object_remove_child(renderer->object, (game_object_t*)childNode->data);
+        childNode = childNode->next;
+    }
     game_object_free(renderer->object);
     free(renderer);
 }

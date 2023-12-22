@@ -20,6 +20,7 @@ int game_object_create(game_object_t** out, const char* name, SDL_FPoint positio
     object->parent = NULL;
     object->renderProperties = renderProperties;
     object->texturePart = texturePart;
+    object->children = NULL;
 
     if (node_list_create(&object->children) != 0)
     {
@@ -57,21 +58,24 @@ void game_object_remove_child(game_object_t* object, game_object_t* child)
 
 void game_object_free(game_object_t* object)
 {
-    list_node_t* childNode = object->children->begin;
-    while (childNode != NULL)
+    if (NULL != object->children)
     {
-        game_object_t* child = (game_object_t*)childNode->data;
-        if (NULL != child->free)
+        list_node_t* childNode = object->children->begin;
+        while (childNode != NULL)
         {
-            child->free(child->implementation);
+            game_object_t* child = (game_object_t*)childNode->data;
+            if (NULL != child->free)
+            {
+                child->free(child->implementation);
+            }
+            else
+            {
+                game_object_free(child);
+            }
+            childNode = childNode->next;
         }
-        else
-        {
-            game_object_free(child);
-        }
-        childNode = childNode->next;
+        node_list_free(object->children);
     }
-    node_list_free(object->children);
     if (NULL != object->parent)
     {
         game_object_remove_child(object->parent, object);
