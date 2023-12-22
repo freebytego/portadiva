@@ -10,8 +10,12 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
     }
 
     render_properties_t renderProperties;
-    renderProperties.width = 30.0f;
-    renderProperties.height = 30.0f;
+
+    target->desiredSize.x = 30.0f;
+    target->desiredSize.y = 30.0f;
+
+    renderProperties.width = 0.0f;
+    renderProperties.height = 0.0f;
     renderProperties.angle = 0.0f;
     renderProperties.center.x = renderProperties.width / 2.0f;
     renderProperties.center.y = renderProperties.height / 2.0f; 
@@ -72,14 +76,42 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
 
     target->needle = needle;
     target->real = NULL;
+    target->doingAnimation = 1;
+
+    target->animationTime = 0.25f * 1000 * 100;
+    target->animationEndAt = target->createdAt + target->animationTime;
 
     *out = target;
 
     return 0;
 }
 
+double bezier(double t, double P0, double P1, double P2, double P3) {
+    return (1 - t) * (1 - t) * (1 - t) * P0 +
+           3 * (1 - t) * (1 - t) * t * P1 +
+           3 * (1 - t) * t * t * P2 +
+           t * t * t * P3;
+}
+
 void game_target_cycle(game_target_t* target)
 {
+    if (target->doingAnimation)
+    {
+        if (SDL_GetTicks() * 100 >= target->animationEndAt)
+        {
+            target->doingAnimation = 0;
+            target->object->renderProperties.width = target->desiredSize.x;
+            target->object->renderProperties.height = target->desiredSize.y;
+        }
+        else
+        {
+            double animationProgress = ((double)(SDL_GetTicks() * 100 - target->createdAt) / (double)(target->animationEndAt - target->createdAt));
+            // i wanna have a non linear thing here
+            target->object->renderProperties.width = bezier(animationProgress, 0.0, 0.6, 0.8, 1.0) * target->desiredSize.x;
+            target->object->renderProperties.height = bezier(animationProgress, 0.0, 0.6, 0.8, 1.0) * target->desiredSize.y;
+        }
+    }
+
     target->progress = (double)(SDL_GetTicks() * 100 - target->createdAt) / (double)(target->finishingAt - target->createdAt);
     if (target->progress >= 1.0 && !target->finished)
     {

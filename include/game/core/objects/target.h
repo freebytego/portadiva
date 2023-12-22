@@ -11,6 +11,7 @@
 #include "include/game/core/objects/rhythm_controller.h"
 #include "include/game/core/objects/target_real.h"
 #include <stdbool.h>
+#include <math.h>
 
 typedef struct game_target_t
 {
@@ -25,6 +26,11 @@ typedef struct game_target_t
     int32_t flyingTime;
     double progress;
     short finished;
+
+    short doingAnimation;
+    uint32_t animationTime;
+    uint32_t animationEndAt;
+    SDL_FPoint desiredSize;
     
 } game_target_t;
 

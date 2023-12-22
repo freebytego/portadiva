@@ -23,7 +23,7 @@ int game_target_needle_create(game_target_needle_t** out, game_target_t* target)
 
     texture_part_t* texturePart = texture_manager_find_texture_part_in_registered("textures", "buttons", "needle");
     
-    if (game_object_create(&targetNeedle->object, "target", target->object->position, renderProperties, texturePart) != 0)
+    if (game_object_create(&targetNeedle->object, "target needle", target->object->position, renderProperties, texturePart) != 0)
     {
         fprintf(stderr, "failed to create a game object for target needle");
         free(targetNeedle);
