@@ -57,6 +57,10 @@ int game_target_real_create(game_target_real_t** out, game_target_t* target)
         targetReal->frequency *= -1;
     }
 
+    targetReal->trailsSize = 0;
+    targetReal->trailIncrement = 0.07f;
+    targetReal->trailAt = targetReal->trailIncrement;
+
     *out = targetReal;
 
     return 0;
@@ -67,8 +71,24 @@ void game_target_real_cycle(game_target_real_t* targetReal)
     double progress = 1.0 - targetReal->target->progress;
     float x = progress * targetReal->distance;
     float y = sin(progress * 3.14f * targetReal->frequency) / 36.0f * targetReal->amplitude;
+
     targetReal->object->position.x = (sin(targetReal->angle) * x + cos(targetReal->angle) * y) + targetReal->target->object->position.x;
     targetReal->object->position.y = (cos(targetReal->angle) * -x - sin(targetReal->angle) * y) + targetReal->target->object->position.y;
+
+    targetReal->trails[targetReal->trailsSize][0] = targetReal->object->position.x;
+    targetReal->trails[targetReal->trailsSize][1] = targetReal->object->position.y;
+    targetReal->trailAt += targetReal->trailIncrement;
+    targetReal->trailsSize++;
+
+    if (targetReal->trailsSize >= MAX_TRAILS)
+    {
+        for (int i = 0; i < MAX_TRAILS - 1; i++)
+        {
+            targetReal->trails[i][0] = targetReal->trails[i + 1][0];
+            targetReal->trails[i][1] = targetReal->trails[i + 1][1];
+        }
+        targetReal->trailsSize = MAX_TRAILS - 1;
+    }
 }
 
 void game_target_real_free(game_target_real_t* targetReal)

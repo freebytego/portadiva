@@ -30,6 +30,23 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
     list_node_t* child = renderer->object->children->begin;
     while (NULL != child)
     {
+        game_object_t* object = (game_object_t*)child->data;
+        game_target_real_t* target = (game_target_real_t*)object->implementation;
+        if (target->trailsSize > 1)
+        {
+                glDisable(GL_TEXTURE_2D);
+                glEnable(GL_BLEND);
+                glDisable(GL_LIGHTING);
+                glShadeModel(GL_SMOOTH);
+                glBegin(GL_LINE_STRIP);
+                for (int i = 0; i < target->trailsSize; ++i)
+                {  
+                    glColor4f(1.0f, 0.0f, 0.0f, 0.05f);
+                    glVertex3f(target->trails[i][0], target->trails[i][1], 0.0f);
+                }
+                glEnd();
+                glEnable(GL_TEXTURE_2D);
+        }
         engine_generic_renderer_render((game_object_t*)child->data);
         child = child->next;
     }

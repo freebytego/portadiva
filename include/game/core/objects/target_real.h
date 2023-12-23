@@ -6,6 +6,8 @@
 #include "include/engine/generic_renderer.h"
 #include "include/engine/texture_manager.h"
 
+#define MAX_TRAILS 24
+
 typedef struct game_target_t game_target_t;
 typedef struct game_target_real_t
 {
@@ -15,6 +17,10 @@ typedef struct game_target_real_t
     float distance;
     float amplitude;
     float frequency;
+    float trails[MAX_TRAILS][2];
+    float trailAt;
+    float trailIncrement;
+    int trailsSize;
 } game_target_real_t;
 
 int game_target_real_create(game_target_real_t** out, game_target_t* target);
