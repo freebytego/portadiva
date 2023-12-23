@@ -6,6 +6,7 @@
 #include <cjson/cJSON.h>
 #include <stdio.h>
 #include "include/core/list.h"
+#include <GL/gl.h>
 
 typedef struct
 {
@@ -17,8 +18,10 @@ typedef struct
 {
     char* name;
     char* filePath;
-    SDL_Texture* texture;
     list_t* parts; // texture_part_t
+    GLuint textureId;
+    int width;
+    int height;
 } texture_t;
 
 typedef struct 

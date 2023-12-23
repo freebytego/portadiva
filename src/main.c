@@ -69,14 +69,14 @@ int main(int argc, char** argv) {
     game_rhythm_controller_t* controller;
     if (game_rhythm_controller_create_from_path(&controller, "./test.dsc") != 0)
     {
-        texture_manager_free(textureManager);
+        // texture_manager_free(textureManager);
         engine_free(engine);
         return -1;
     }
     if (game_object_add_child(engine->scene->object, controller->object) != 0)
     {
         game_rhythm_controller_free(controller);
-        texture_manager_free(textureManager);
+        // texture_manager_free(textureManager);
         engine_free(engine);
         return -1;
     }
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
     if (game_target_real_renderer_create(&targetRealRenderer) != 0)
     {
         game_rhythm_controller_free(controller);
-        texture_manager_free(textureManager);
+        // texture_manager_free(textureManager);
         engine_free(engine);
         return -1;
     }
@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
     {
         game_target_real_renderer_free(targetRealRenderer);
         game_rhythm_controller_free(controller);
-        texture_manager_free(textureManager);
+        // texture_manager_free(textureManager);
         engine_free(engine);
         return -1;
     }

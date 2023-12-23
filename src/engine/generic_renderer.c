@@ -22,19 +22,45 @@ void engine_generic_renderer_render(game_object_t* object)
     }
     if (NULL == object->texturePart)
     {
-        SDL_SetRenderDrawColor(GLOBAL_ENGINE->renderer, 255, 0, 0, 255);
-        SDL_RenderFillRectF(GLOBAL_ENGINE->renderer, &rect);
+        glDisable(GL_TEXTURE_2D);
+        glBegin(GL_QUADS);
+
+        glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(rect.x, rect.y);
+        glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(rect.x + rect.w, rect.y);
+        glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(rect.x + rect.w, rect.y + rect.h);
+        glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(rect.x, rect.y + rect.h);
+
+        glEnd();
+        glEnable(GL_TEXTURE_2D);
         return;
     }
     rect.x += object->renderProperties.offset.x;
     rect.y += object->renderProperties.offset.y;
-    SDL_RenderCopyExF(
-        GLOBAL_ENGINE->renderer, 
-        object->texturePart->texture->texture, 
-        &object->texturePart->source,
-        &rect,
-        object->renderProperties.angle,
-        &object->renderProperties.center,
-        SDL_FLIP_NONE
-    );
+
+    float texCoordX1 = (object->texturePart->source.x / (float)object->texturePart->texture->width);
+    float texCoordY1 = (object->texturePart->source.y / (float)object->texturePart->texture->height);
+    float texCoordX2 = ((object->texturePart->source.x + object->texturePart->source.w) / (float)object->texturePart->texture->width);
+    float texCoordY2 = ((object->texturePart->source.y + object->texturePart->source.h) / (float)object->texturePart->texture->height);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, object->texturePart->texture->textureId);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glPushMatrix();
+
+    glTranslatef(object->position.x, object->position.y, 0);
+    glRotatef(object->renderProperties.angle, 0, 0, 1.0);
+    glTranslatef(-object->position.x, -object->position.y, 0);
+
+    glBegin(GL_TRIANGLE_FAN);
+
+    glColor3f(1, 0, 0); glTexCoord2f(texCoordX1, texCoordY1); glVertex2f(rect.x, rect.y);
+    glColor3f(0, 1, 0); glTexCoord2f(texCoordX2, texCoordY1); glVertex2f(rect.x + rect.w, rect.y);
+    glColor3f(0, 0, 1); glTexCoord2f(texCoordX2, texCoordY2); glVertex2f(rect.x + rect.w, rect.y + rect.h);
+    glColor3f(1, 1, 1); glTexCoord2f(texCoordX1, texCoordY2); glVertex2f(rect.x, rect.y + rect.h);
+
+    glEnd();
+    
+    glPopMatrix();
 }

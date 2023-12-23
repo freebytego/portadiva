@@ -6,10 +6,11 @@
 #include <SDL2/SDL_image.h>
 #include "include/engine/game_object.h"
 #include "include/engine/scene_object.h"
+#include <GL/gl.h>
 
 typedef struct engine_t
 {
-    SDL_Renderer* renderer;
+    SDL_GLContext* context;
     SDL_Window* window;
     scene_object_t* scene;
     void (*free_scene)(scene_object_t*);

@@ -71,11 +71,6 @@ void game_target_real_cycle(game_target_real_t* targetReal)
     targetReal->object->position.y = (cos(targetReal->angle) * -x - sin(targetReal->angle) * y) + targetReal->target->object->position.y;
 }
 
-void game_target_real_render(game_target_real_t* targetReal)
-{
-    engine_generic_renderer_render(targetReal->object);
-}
-
 void game_target_real_free(game_target_real_t* targetReal)
 {
     game_object_free(targetReal->object);

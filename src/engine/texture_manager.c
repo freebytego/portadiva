@@ -94,7 +94,7 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
         retval = -1;
         goto end;
     }
-    texture->texture = NULL;
+    texture->textureId = 0;
 
     FILE* textureDefinitionJsonFile = fopen(textureConfigPath, "r");
     size_t textureDefinitionJsonFileSize = 0;
@@ -152,14 +152,21 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
             retval = -1;
             goto free_texture_file_path;
         }
-        texture->texture = SDL_CreateTextureFromSurface(GLOBAL_ENGINE->renderer, surface);
+        texture->width = surface->w;
+        texture->height = surface->h;
+        glGenTextures(1, &texture->textureId);
+        glBindTexture(GL_TEXTURE_2D, texture->textureId);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // texture->texture = SDL_CreateTextureFromSurface(GLOBAL_ENGINE->renderer, surface);
         SDL_FreeSurface(surface);
-        if (NULL == texture->texture)
-        {
-            fprintf(stderr, "failed to create a texture from surface: %s\n", SDL_GetError());
-            retval = -1;
-            goto free_texture_file_path;
-        }
+        // if (NULL == texture->texture)
+        // {
+        //     fprintf(stderr, "failed to create a texture from surface: %s\n", SDL_GetError());
+        //     retval = -1;
+        //     goto free_texture_file_path;
+        // }
     }
     else
     {
@@ -243,7 +250,7 @@ free_texture_parts:
     }
     node_list_free(texture->parts);
 free_sdl_texture:
-    SDL_DestroyTexture(texture->texture);
+    glDeleteTextures(1, &texture->textureId);
 free_texture_file_path:
     free(texture->filePath);
 free_texture_name:
@@ -268,7 +275,7 @@ void texture_manager_free_texture(texture_manager_t* manager, texture_t* texture
         partIterNode = partIterNode->next;
     }
     node_list_free(texture->parts);
-    if (NULL != texture->texture) SDL_DestroyTexture(texture->texture);
+    glDeleteTextures(1, &texture->textureId);
 
     list_node_t* textureNode = manager->textures->begin;
     while (NULL != textureNode)

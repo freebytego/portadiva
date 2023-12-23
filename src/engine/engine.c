@@ -18,16 +18,40 @@ int engine_create(engine_t** out)
         SDL_WINDOWPOS_UNDEFINED,
         480,
         272,
-        0
+        SDL_WINDOW_OPENGL
     );
-    engine->renderer = SDL_CreateRenderer(engine->window, -1, SDL_RENDERER_ACCELERATED);
-
-    // TODO: validations here
-
-    int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
-    if(!( IMG_Init( imgFlags ) & imgFlags ))
+    if (NULL == engine->window)
     {
-        // uh oh
+        free(engine);
+        return -1;
+    }
+
+    engine->context = SDL_GL_CreateContext(engine->window);
+    if (NULL == engine->context)
+    {
+        SDL_DestroyWindow(engine->window);
+        free(engine);
+        return -1;
+    }
+
+    SDL_SetWindowFullscreen(engine->window, SDL_FALSE);
+
+    glMatrixMode(GL_PROJECTION);
+    glOrtho(0, 480, 272, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glEnable(GL_TEXTURE_2D);
+    glViewport(0, 0, 480, 272);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    
+    int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
+    if(!(IMG_Init(imgFlags) & imgFlags))
+    {
+        SDL_GL_DeleteContext(engine->context);
+        SDL_DestroyWindow(engine->window);
+        free(engine);
+        return -1;
     }
 
     engine->running = 1;
@@ -77,12 +101,12 @@ void engine_handle_input(engine_t* engine)
 
 void engine_render(engine_t* engine)
 {
-    SDL_RenderClear(engine->renderer);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     scene_object_render(engine->scene);
 
-    SDL_SetRenderDrawColor(engine->renderer, 255, 255, 255, 255);
-    SDL_RenderPresent(engine->renderer);
+    SDL_GL_SwapWindow(engine->window);
 }
 
 void engine_free_scene(engine_t* engine)
@@ -95,7 +119,6 @@ void engine_free(engine_t* engine)
 {
     if (NULL != engine->scene)
         engine->free_scene(engine->scene);
-    SDL_DestroyRenderer(engine->renderer);
     SDL_DestroyWindow(engine->window);
     free(engine);
 }

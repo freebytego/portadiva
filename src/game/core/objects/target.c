@@ -106,7 +106,6 @@ void game_target_cycle(game_target_t* target)
         else
         {
             double animationProgress = ((double)(SDL_GetTicks() * 100 - target->createdAt) / (double)(target->animationEndAt - target->createdAt));
-            // i wanna have a non linear thing here
             target->object->renderProperties.width = bezier(animationProgress, 0.0, 0.6, 0.8, 1.0) * target->desiredSize.x;
             target->object->renderProperties.height = bezier(animationProgress, 0.0, 0.6, 0.8, 1.0) * target->desiredSize.y;
         }
