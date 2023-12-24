@@ -54,6 +54,8 @@ int engine_create(engine_t** out)
         return -1;
     }
 
+    populateLookupTables();
+
     engine->running = 1;
     engine->scene = NULL;
 
@@ -102,7 +104,7 @@ void engine_handle_input(engine_t* engine)
 void engine_render(engine_t* engine)
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     scene_object_render(engine->scene);
 

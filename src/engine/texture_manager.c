@@ -157,16 +157,9 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
         glGenTextures(1, &texture->textureId);
         glBindTexture(GL_TEXTURE_2D, texture->textureId);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        // texture->texture = SDL_CreateTextureFromSurface(GLOBAL_ENGINE->renderer, surface);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         SDL_FreeSurface(surface);
-        // if (NULL == texture->texture)
-        // {
-        //     fprintf(stderr, "failed to create a texture from surface: %s\n", SDL_GetError());
-        //     retval = -1;
-        //     goto free_texture_file_path;
-        // }
     }
     else
     {

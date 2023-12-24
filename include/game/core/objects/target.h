@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "include/engine/engine.h"
 #include "include/engine/game_object.h"
 #include "include/game/core/dsc/target.h"
 #include "include/engine/generic_renderer.h"
@@ -31,7 +32,6 @@ typedef struct game_target_t
     uint32_t animationTime;
     uint32_t animationEndAt;
     SDL_FPoint desiredSize;
-    
 } game_target_t;
 
 int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t flyingTime);

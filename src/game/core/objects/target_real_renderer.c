@@ -1,4 +1,6 @@
 #include "include/game/core/objects/target_real_renderer.h"
+#include "include/game/core/objects/target.h"
+#include <time.h>
 
 int game_target_real_renderer_create(game_target_real_renderer_t** out)
 {
@@ -32,21 +34,26 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
     {
         game_object_t* object = (game_object_t*)child->data;
         game_target_real_t* target = (game_target_real_t*)object->implementation;
-        if (target->trailsSize > 1)
+
+        glDisable(GL_TEXTURE_2D);
+        glColor4f(target->trailColor[0], target->trailColor[1], target->trailColor[2], 0.1f);
+        glBegin(GL_QUAD_STRIP);
+        float thickness = 3.0f;
+        for (int i = 0; i < MAX_TRAILS; ++i)
         {
-                glDisable(GL_TEXTURE_2D);
-                glEnable(GL_BLEND);
-                glDisable(GL_LIGHTING);
-                glShadeModel(GL_SMOOTH);
-                glBegin(GL_LINE_STRIP);
-                for (int i = 0; i < target->trailsSize; ++i)
-                {  
-                    glColor4f(1.0f, 0.0f, 0.0f, 0.05f);
-                    glVertex3f(target->trails[i][0], target->trails[i][1], 0.0f);
-                }
-                glEnd();
-                glEnable(GL_TEXTURE_2D);
+            glVertex3f(target->trails[0][i][0] - thickness, target->trails[0][i][1], 0.0f);
+            glVertex3f(target->trails[0][i][0] + thickness, target->trails[0][i][1], 0.0f);
+            thickness -= thickness / MAX_TRAILS;
         }
+        glEnd();
+
+        glBegin(GL_LINE_STRIP);
+        for (int i = 0; i < MAX_TRAILS; ++i)
+        {
+            glVertex3f(target->trails[1][i][0], target->trails[1][i][1], 0.0f);
+        }
+        glEnd();
+
         engine_generic_renderer_render((game_object_t*)child->data);
         child = child->next;
     }

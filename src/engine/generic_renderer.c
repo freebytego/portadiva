@@ -55,10 +55,10 @@ void engine_generic_renderer_render(game_object_t* object)
 
     glBegin(GL_TRIANGLE_FAN);
 
-    glColor3f(1, 0, 0); glTexCoord2f(texCoordX1, texCoordY1); glVertex2f(rect.x, rect.y);
-    glColor3f(0, 1, 0); glTexCoord2f(texCoordX2, texCoordY1); glVertex2f(rect.x + rect.w, rect.y);
-    glColor3f(0, 0, 1); glTexCoord2f(texCoordX2, texCoordY2); glVertex2f(rect.x + rect.w, rect.y + rect.h);
-    glColor3f(1, 1, 1); glTexCoord2f(texCoordX1, texCoordY2); glVertex2f(rect.x, rect.y + rect.h);
+    glTexCoord2f(texCoordX1, texCoordY1); glVertex2f(rect.x, rect.y);
+    glTexCoord2f(texCoordX2, texCoordY1); glVertex2f(rect.x + rect.w, rect.y);
+    glTexCoord2f(texCoordX2, texCoordY2); glVertex2f(rect.x + rect.w, rect.y + rect.h);
+    glTexCoord2f(texCoordX1, texCoordY2); glVertex2f(rect.x, rect.y + rect.h);
 
     glEnd();
     

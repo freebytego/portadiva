@@ -6,6 +6,7 @@
 #include <SDL2/SDL_image.h>
 #include "include/engine/game_object.h"
 #include "include/engine/scene_object.h"
+#include "include/engine/trig_lookup.h"
 #include <GL/gl.h>
 
 typedef struct engine_t
@@ -15,6 +16,7 @@ typedef struct engine_t
     scene_object_t* scene;
     void (*free_scene)(scene_object_t*);
     short running;
+    
 } engine_t;
 
 extern engine_t* GLOBAL_ENGINE;

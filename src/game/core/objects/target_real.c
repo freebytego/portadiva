@@ -25,13 +25,62 @@ int game_target_real_create(game_target_real_t** out, game_target_t* target)
     const char* type;
     switch (target->dscTarget->type)
     {
-        case 0: case 4: case 18: type = "triangle_real"; break;
-        case 1: case 5: case 19: type = "circle_real"; break;
-        case 2: case 6: case 20: type = "cross_real"; break;
-        case 3: case 7: case 21: type = "square_real"; break;
-        case 12: case 14: type = "slide_left_real"; break;
-        case 13: case 16: type = "slide_right_real"; break;
-        default: type = "triangle_real"; break;
+        case 0: case 4: case 18: 
+        {
+            type = "triangle_real";
+            targetReal->trailColor[0] = 0.0f;
+            targetReal->trailColor[1] = 0.84f;
+            targetReal->trailColor[2] = 0.6f;
+            break;
+        }
+        case 1: case 5: case 19: 
+        {
+            type = "circle_real";
+            targetReal->trailColor[0] = 0.95f;
+            targetReal->trailColor[1] = 0.16f;
+            targetReal->trailColor[2] = 0.46f;
+            break;
+        }
+        case 2: case 6: case 20: 
+        {
+            type = "cross_real";
+            targetReal->trailColor[0] = 0.10f;
+            targetReal->trailColor[1] = 0.62f;
+            targetReal->trailColor[2] = 0.96f;
+            break;
+        }
+        case 3: case 7: case 21:
+        {
+            type = "square_real";
+            targetReal->trailColor[0] = 0.96f;
+            targetReal->trailColor[1] = 0.30f;
+            targetReal->trailColor[2] = 0.8f;
+            break;
+        }
+        case 12: case 14:
+        {
+            type = "slide_left_real";
+            targetReal->trailColor[0] = 0.99f;
+            targetReal->trailColor[1] = 0.75f;
+            targetReal->trailColor[2] = 0.0f;
+            break;
+        }
+        case 13: case 16: 
+        {
+            type = "slide_right_real";
+            targetReal->trailColor[0] = 0.99f;
+            targetReal->trailColor[1] = 0.75f;
+            targetReal->trailColor[2] = 0.0f;
+            break;
+        }
+        default:
+        {
+            type = "triangle_real";
+            targetReal->trailColor[0] = 1.0f;
+            targetReal->trailColor[1] = 1.0f;
+            targetReal->trailColor[2] = 1.0f;
+            break;
+        }
     }
 
     texture_part_t* texturePart = texture_manager_find_texture_part_in_registered("textures", "buttons", type);
@@ -58,8 +107,6 @@ int game_target_real_create(game_target_real_t** out, game_target_t* target)
     }
 
     targetReal->trailsSize = 0;
-    targetReal->trailIncrement = 0.07f;
-    targetReal->trailAt = targetReal->trailIncrement;
 
     *out = targetReal;
 
@@ -70,24 +117,29 @@ void game_target_real_cycle(game_target_real_t* targetReal)
 {    
     double progress = 1.0 - targetReal->target->progress;
     float x = progress * targetReal->distance;
-    float y = sin(progress * 3.14f * targetReal->frequency) / 36.0f * targetReal->amplitude;
+    float y = tsin(progress * 3.14f * targetReal->frequency) / 36.0f * targetReal->amplitude;
+    targetReal->object->position.x = (tsin(targetReal->angle) * x + tcos(targetReal->angle) * y) + targetReal->target->object->position.x;
+    targetReal->object->position.y = (tcos(targetReal->angle) * -x - tsin(targetReal->angle) * y) + targetReal->target->object->position.y;
 
-    targetReal->object->position.x = (sin(targetReal->angle) * x + cos(targetReal->angle) * y) + targetReal->target->object->position.x;
-    targetReal->object->position.y = (cos(targetReal->angle) * -x - sin(targetReal->angle) * y) + targetReal->target->object->position.y;
-
-    targetReal->trails[targetReal->trailsSize][0] = targetReal->object->position.x;
-    targetReal->trails[targetReal->trailsSize][1] = targetReal->object->position.y;
-    targetReal->trailAt += targetReal->trailIncrement;
-    targetReal->trailsSize++;
-
-    if (targetReal->trailsSize >= MAX_TRAILS)
+    // todo: make this a bit cleaner
+    float trailProgress = progress;
+    for (int i = 0; i < MAX_TRAILS; ++i)
     {
-        for (int i = 0; i < MAX_TRAILS - 1; i++)
-        {
-            targetReal->trails[i][0] = targetReal->trails[i + 1][0];
-            targetReal->trails[i][1] = targetReal->trails[i + 1][1];
-        }
-        targetReal->trailsSize = MAX_TRAILS - 1;
+        float trailX = trailProgress * targetReal->distance;
+        float trailY = tsin(trailProgress * 3.14f * targetReal->frequency) / 33.0f * targetReal->amplitude;
+        targetReal->trails[0][i][0] = (tsin(targetReal->angle) * trailX + tcos(targetReal->angle) * trailY) + targetReal->target->object->position.x;
+        targetReal->trails[0][i][1] = (tcos(targetReal->angle) * -trailX - tsin(targetReal->angle) * trailY) + targetReal->target->object->position.y;
+        trailProgress += 0.1;
+    }
+
+    trailProgress = progress;
+    for (int i = 0; i < MAX_TRAILS; ++i)
+    {
+        float trailX = trailProgress * targetReal->distance;
+        float trailY = tsin(trailProgress * 3.14f * (targetReal->frequency + 0.4f)) / 25.0f * targetReal->amplitude;
+        targetReal->trails[1][i][0] = (tsin(targetReal->angle) * trailX + tcos(targetReal->angle) * trailY) + targetReal->target->object->position.x;
+        targetReal->trails[1][i][1] = (tcos(targetReal->angle) * -trailX - tsin(targetReal->angle) * trailY) + targetReal->target->object->position.y;
+        trailProgress += 0.11;
     }
 }
 

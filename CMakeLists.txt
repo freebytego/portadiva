@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
     src/engine/scene_object.c
     src/engine/generic_renderer.c
     src/engine/texture_manager.c
+    src/engine/trig_lookup.c
     
     src/game/core/dsc/opcode.c
     src/game/core/dsc/dsc.c
