@@ -84,7 +84,7 @@ void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
             {
                 dsc_target_t* dscTarget = (dsc_target_t*)targetNode->data;
                 game_target_t* gameTarget;
-                game_target_create(&gameTarget, dscTarget, nextTimeElement->flyingTime);
+                game_target_create(&gameTarget, dscTarget, nextTimeElement->flyingTime, nextTimeElement->targets->length > 1);
                 game_object_add_child(controller->object, gameTarget->object);
                 game_target_create_target_real(gameTarget);
                 if (currentTargetsCount < 4) controller->currentTargets[currentTargetsCount] = gameTarget;

@@ -31,6 +31,14 @@ typedef struct
     SDL_Rect source;
 } texture_part_t;
 
+typedef struct
+{
+    float x1;
+    float x2;
+    float y1;
+    float y2;
+} texture_position_t; // i can just use SDL_FRect for this, but this is slightly more readable
+
 int texture_manager_create(texture_manager_t** out, const char* name);
 void texture_manager_free(texture_manager_t* manager);
 int texture_manager_add_texture(texture_manager_t* manager, const char* textureConfigPath);
@@ -40,5 +48,6 @@ static list_t* registeredTextureManagers = NULL;
 texture_manager_t* texture_manager_find_registered(const char* name);
 texture_t* texture_manager_find_texture_in_registered(const char* managerName, const char* textureName);
 texture_part_t* texture_manager_find_texture_part_in_registered(const char* managerName, const char* textureName, const char* texturePartName);
+texture_position_t texture_manager_get_texture_position_from_texture_part(texture_part_t* texturePart);
 
 #endif

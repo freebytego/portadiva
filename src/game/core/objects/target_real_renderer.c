@@ -2,6 +2,9 @@
 #include "include/game/core/objects/target.h"
 #include <time.h>
 
+texture_part_t* connectedTargetTexturePart;
+texture_position_t connectedTargetTexturePosition;
+
 int game_target_real_renderer_create(game_target_real_renderer_t** out)
 {
     game_target_real_renderer_t* renderer = (game_target_real_renderer_t*)malloc(sizeof(game_target_real_renderer_t));
@@ -22,6 +25,9 @@ int game_target_real_renderer_create(game_target_real_renderer_t** out)
     game_object_set_render(renderer->object, (void (*)(void*))&game_target_real_renderer_render);
     game_object_set_free(renderer->object, (void (*)(void*))&game_target_real_renderer_free);
 
+    connectedTargetTexturePart = texture_manager_find_texture_part_in_registered("textures", "buttons", "connected");
+    connectedTargetTexturePosition = texture_manager_get_texture_position_from_texture_part(connectedTargetTexturePart);
+
     *out = renderer;
 
     return 0;
@@ -29,6 +35,7 @@ int game_target_real_renderer_create(game_target_real_renderer_t** out)
 
 void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
 {
+    // draw the trail and connected lines first
     list_node_t* child = renderer->object->children->begin;
     while (NULL != child)
     {
@@ -56,14 +63,35 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
 
         if (NULL != targetReal->target->connectedTarget)
         {
-            glDisable(GL_TEXTURE_2D);
+            SDL_FPoint normal;
+            normal.x = targetReal->target->connectedTarget->real->object->position.y - targetReal->target->real->object->position.y;
+            normal.y = -1 * (targetReal->target->connectedTarget->real->object->position.x - targetReal->target->real->object->position.x);
+            float normalMagnitude = sqrt(normal.x * normal.x + normal.y * normal.y);
+            normal.x /= normalMagnitude;
+            normal.y /= normalMagnitude;
+            // TODO: get rid of the random numbers
+            normal.x *= 5.f;
+            normal.y *= 5.f;
+            glBindTexture(GL_TEXTURE_2D, targetReal->object->texturePart->texture->textureId);
+            glEnable(GL_TEXTURE_2D);
+            glBegin(GL_QUADS);
             glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-            glBegin(GL_LINES);
-            glVertex3f(targetReal->target->real->object->position.x, targetReal->target->real->object->position.y, 0.0f);
-            glVertex3f(targetReal->target->connectedTarget->real->object->position.x, targetReal->target->connectedTarget->real->object->position.y, 0.0f);
+            glTexCoord2f(connectedTargetTexturePosition.x2, connectedTargetTexturePosition.y2);
+            glVertex3f(targetReal->target->real->object->position.x - normal.x, targetReal->target->real->object->position.y - normal.y, 0.0f);
+            glTexCoord2f(connectedTargetTexturePosition.x1, connectedTargetTexturePosition.y2);
+            glVertex3f(targetReal->target->real->object->position.x + normal.x, targetReal->target->real->object->position.y + normal.y, 0.0f);
+            glTexCoord2f(connectedTargetTexturePosition.x1, connectedTargetTexturePosition.y1);
+            glVertex3f(targetReal->target->connectedTarget->real->object->position.x - normal.x, targetReal->target->connectedTarget->real->object->position.y - normal.y, 0.0f);
+            glTexCoord2f(connectedTargetTexturePosition.x2, connectedTargetTexturePosition.y1);
+            glVertex3f(targetReal->target->connectedTarget->real->object->position.x + normal.x, targetReal->target->connectedTarget->real->object->position.y + normal.y, 0.0f);
             glEnd();
         }
-
+        child = child->next;
+    }
+    // then the target itself
+    child = renderer->object->children->begin;
+    while (NULL != child)
+    {
         engine_generic_renderer_render((game_object_t*)child->data);
         child = child->next;
     }

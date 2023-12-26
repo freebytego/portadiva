@@ -157,8 +157,8 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
         glGenTextures(1, &texture->textureId);
         glBindTexture(GL_TEXTURE_2D, texture->textureId);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         SDL_FreeSurface(surface);
     }
     else
@@ -335,4 +335,14 @@ texture_part_t* texture_manager_find_texture_part_in_registered(const char* mana
         texturePartNode = texturePartNode->next;
     }
     return NULL;
+}
+
+texture_position_t texture_manager_get_texture_position_from_texture_part(texture_part_t* texturePart)
+{
+    texture_position_t position;
+    position.x1 = (texturePart->source.x / (float)texturePart->texture->width);
+    position.y1 = (texturePart->source.y / (float)texturePart->texture->height);
+    position.x2 = ((texturePart->source.x + texturePart->source.w) / (float)texturePart->texture->width);
+    position.y2 = ((texturePart->source.y + texturePart->source.h) / (float)texturePart->texture->height);
+    return position;
 }

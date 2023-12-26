@@ -27,6 +27,7 @@ typedef struct game_target_t
     int32_t flyingTime;
     double progress;
     short finished;
+    short multi;
 
     short doingAnimation;
     uint32_t animationTime;
@@ -34,7 +35,7 @@ typedef struct game_target_t
     SDL_FPoint desiredSize;
 } game_target_t;
 
-int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t flyingTime);
+int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t flyingTime, int multi);
 void game_target_cycle(game_target_t* target);
 void game_target_render(game_target_t* target);
 void game_target_free(game_target_t* target);

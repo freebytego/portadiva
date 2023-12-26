@@ -1,6 +1,6 @@
 #include "include/game/core/objects/target.h"
 
-int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t flyingTime)
+int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t flyingTime, int multi)
 {
     game_target_t* target = (game_target_t*)malloc(sizeof(game_target_t));
     if (NULL == target)
@@ -23,16 +23,18 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
     renderProperties.offset.x = 0.0f; // todo: from config
     renderProperties.offset.y = 0.0f; // todo: from config
 
+    target->multi = multi;
+
     const char* type;
     switch (dscTarget->type)
     {
-        case 0: case 4: case 18: type = "triangle_black"; break;
-        case 1: case 5: case 19: type = "circle_black"; break;
-        case 2: case 6: case 20: type = "cross_black"; break;
-        case 3: case 7: case 21: type = "square_black"; break;
-        case 12: case 14: type = "slide_left_black"; break;
-        case 13: case 16: type = "slide_right_black"; break;
-        default: type = "triangle_black"; break; // temp
+        case 0: case 4: case 18: type = target->multi ? "triangle_multi" : "triangle_black"; break;
+        case 1: case 5: case 19: type = target->multi ? "circle_multi" : "circle_black"; break;
+        case 2: case 6: case 20: type = target->multi ? "cross_multi" : "cross_black"; break;
+        case 3: case 7: case 21: type = target->multi ? "square_multi" : "square_black"; break;
+        case 12: case 14: type = target->multi ? "slide_left_multi" : "slide_left_black"; break;
+        case 13: case 16: type = target->multi ? "slide_left_multi" : "slide_right_black"; break;
+        default: type = target->multi ? "triangle_multi" : "triangle_black"; break; // temp
     }
 
     texture_part_t* texturePart = texture_manager_find_texture_part_in_registered("textures", "buttons", type);

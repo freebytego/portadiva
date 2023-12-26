@@ -37,10 +37,7 @@ void engine_generic_renderer_render(game_object_t* object)
     rect.x += object->renderProperties.offset.x;
     rect.y += object->renderProperties.offset.y;
 
-    float texCoordX1 = (object->texturePart->source.x / (float)object->texturePart->texture->width);
-    float texCoordY1 = (object->texturePart->source.y / (float)object->texturePart->texture->height);
-    float texCoordX2 = ((object->texturePart->source.x + object->texturePart->source.w) / (float)object->texturePart->texture->width);
-    float texCoordY2 = ((object->texturePart->source.y + object->texturePart->source.h) / (float)object->texturePart->texture->height);
+    texture_position_t position = texture_manager_get_texture_position_from_texture_part(object->texturePart);
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, object->texturePart->texture->textureId);
@@ -55,10 +52,10 @@ void engine_generic_renderer_render(game_object_t* object)
 
     glBegin(GL_TRIANGLE_FAN);
 
-    glTexCoord2f(texCoordX1, texCoordY1); glVertex2f(rect.x, rect.y);
-    glTexCoord2f(texCoordX2, texCoordY1); glVertex2f(rect.x + rect.w, rect.y);
-    glTexCoord2f(texCoordX2, texCoordY2); glVertex2f(rect.x + rect.w, rect.y + rect.h);
-    glTexCoord2f(texCoordX1, texCoordY2); glVertex2f(rect.x, rect.y + rect.h);
+    glTexCoord2f(position.x1, position.y1); glVertex2f(rect.x, rect.y);
+    glTexCoord2f(position.x2, position.y1); glVertex2f(rect.x + rect.w, rect.y);
+    glTexCoord2f(position.x2, position.y2); glVertex2f(rect.x + rect.w, rect.y + rect.h);
+    glTexCoord2f(position.x1, position.y2); glVertex2f(rect.x, rect.y + rect.h);
 
     glEnd();
     
