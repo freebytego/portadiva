@@ -19,6 +19,7 @@ typedef struct {
     uint32_t startedAt;
     uint32_t ticks;
     game_target_real_renderer_t* targetRealRenderer;
+    game_target_t* currentTargets[4];
 } game_rhythm_controller_t;
 
 int game_rhythm_controller_create_from_path(game_rhythm_controller_t** out, const char* filePath);

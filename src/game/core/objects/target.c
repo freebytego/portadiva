@@ -76,6 +76,7 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
 
     target->needle = needle;
     target->real = NULL;
+    target->connectedTarget = NULL;
     target->doingAnimation = 1;
 
     target->animationTime = 0.25f * 1000 * 100;

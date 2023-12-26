@@ -44,6 +44,25 @@ int node_list_add_node(list_t* list, void* data)
     return 0;
 }
 
+void node_list_reset(list_t* list)
+{
+    if (NULL == list)
+    {
+        fprintf(stderr, "tried to reset an empty list\n");
+        return;
+    }
+    list_node_t* node = list->begin;
+    while (NULL != node)
+    {
+        list_node_t* next = node->next;
+        free(node);
+        node = next;
+    }
+    list->length = 0;
+    list->begin = NULL;
+    list->end = NULL;
+}
+
 void node_list_remove_node(list_t* list, list_node_t* node)
 {
     if (node->next == NULL)

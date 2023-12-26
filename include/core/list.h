@@ -22,5 +22,6 @@ int node_list_create(list_t** out);
 int node_list_add_node(list_t* list, void* data);
 void node_list_remove_node(list_t* list, list_node_t* node); // doesn't free inside data!
 void node_list_free(list_t* list); // doesn't free inside data!
+void node_list_reset(list_t* list);
 
 #endif

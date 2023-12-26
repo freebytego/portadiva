@@ -11,7 +11,6 @@ void populateLookupTables()
         double index = i * 2.0 * M_PI / LOOKUP_TABLE_LENGTH;
         lsin[i] = sin(index);
         lcos[i] = cos(index);
-        printf("%f\n", index);
     }
 }
 

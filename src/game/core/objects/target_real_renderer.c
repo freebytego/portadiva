@@ -33,16 +33,16 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
     while (NULL != child)
     {
         game_object_t* object = (game_object_t*)child->data;
-        game_target_real_t* target = (game_target_real_t*)object->implementation;
+        game_target_real_t* targetReal = (game_target_real_t*)object->implementation;
 
         glDisable(GL_TEXTURE_2D);
-        glColor4f(target->trailColor[0], target->trailColor[1], target->trailColor[2], 0.1f);
+        glColor4f(targetReal->trailColor[0], targetReal->trailColor[1], targetReal->trailColor[2], 0.1f);
         glBegin(GL_QUAD_STRIP);
         float thickness = 3.0f;
         for (int i = 0; i < MAX_TRAILS; ++i)
         {
-            glVertex3f(target->trails[0][i][0] - thickness, target->trails[0][i][1], 0.0f);
-            glVertex3f(target->trails[0][i][0] + thickness, target->trails[0][i][1], 0.0f);
+            glVertex3f(targetReal->trails[0][i][0] - thickness, targetReal->trails[0][i][1], 0.0f);
+            glVertex3f(targetReal->trails[0][i][0] + thickness, targetReal->trails[0][i][1], 0.0f);
             thickness -= thickness / MAX_TRAILS;
         }
         glEnd();
@@ -50,9 +50,19 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
         glBegin(GL_LINE_STRIP);
         for (int i = 0; i < MAX_TRAILS; ++i)
         {
-            glVertex3f(target->trails[1][i][0], target->trails[1][i][1], 0.0f);
+            glVertex3f(targetReal->trails[1][i][0], targetReal->trails[1][i][1], 0.0f);
         }
         glEnd();
+
+        if (NULL != targetReal->target->connectedTarget)
+        {
+            glDisable(GL_TEXTURE_2D);
+            glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+            glBegin(GL_LINES);
+            glVertex3f(targetReal->target->real->object->position.x, targetReal->target->real->object->position.y, 0.0f);
+            glVertex3f(targetReal->target->connectedTarget->real->object->position.x, targetReal->target->connectedTarget->real->object->position.y, 0.0f);
+            glEnd();
+        }
 
         engine_generic_renderer_render((game_object_t*)child->data);
         child = child->next;

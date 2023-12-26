@@ -35,6 +35,28 @@ int game_rhythm_controller_create_from_path(game_rhythm_controller_t** out, cons
     return 0;
 }
 
+SDL_FPoint center;
+// Thanks Project Heartbeat! <3
+int sort_game_targets(const void* a, const void* b)
+{
+    const game_target_t* targetA = *(const game_target_t**)a;
+    const game_target_t* targetB = *(const game_target_t**)b;
+    if (targetA->object->position.x - center.x >= 0 && targetB->object->position.x - center.x < 0) return -1;
+    if (targetA->object->position.x - center.x < 0 && targetB->object->position.x - center.x >= 0) return 1;
+    if (targetA->object->position.x - center.x == 0 && targetB->object->position.x - center.x == 0) 
+    {
+        if (targetA->object->position.y - center.y >= 0 || targetB->object->position.y - center.y >= 0) return targetA->object->position.y > targetB->object->position.y ? 1 : -1;
+        return targetA->object->position.y < targetB->object->position.y ? 1 : -1;
+    }
+    double cross = (targetA->object->position.x - center.x) * (targetB->object->position.y - center.y) - (targetB->object->position.x - center.x) * (targetA->object->position.y - center.y);
+    if (cross < 0) return 1;
+    if (cross > 0) return -1;
+
+    float distanceA = (targetA->object->position.x - center.x) * (targetA->object->position.x - center.x) + (targetA->object->position.y - center.y) * (targetA->object->position.y - center.y);
+    float distanceB = (targetB->object->position.x - center.x) * (targetB->object->position.x - center.x) + (targetB->object->position.y - center.y) * (targetB->object->position.y - center.y);
+    return distanceA > distanceB ? 1 : -1;
+}
+
 void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
 {
     controller->ticks = (SDL_GetTicks() - controller->startedAt) * 100;
@@ -57,6 +79,7 @@ void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
         if (controller->ticks > nextTimeElement->time)
         {
             list_node_t* targetNode = nextTimeElement->targets->begin;
+            size_t currentTargetsCount = 0;
             while (targetNode != NULL)
             {
                 dsc_target_t* dscTarget = (dsc_target_t*)targetNode->data;
@@ -64,8 +87,39 @@ void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
                 game_target_create(&gameTarget, dscTarget, nextTimeElement->flyingTime);
                 game_object_add_child(controller->object, gameTarget->object);
                 game_target_create_target_real(gameTarget);
+                if (currentTargetsCount < 4) controller->currentTargets[currentTargetsCount] = gameTarget;
+                ++currentTargetsCount;
                 targetNode = targetNode->next;
             }
+            switch (currentTargetsCount)
+            {
+            case 2:
+                controller->currentTargets[0]->connectedTarget = controller->currentTargets[1];
+                goto switchDone;
+            case 3:
+            case 4:
+            {
+                center.x = 0.0f;
+                center.y = 0.0f;
+                for (int i = 0; i < currentTargetsCount; ++i)
+                {
+                    center.x += controller->currentTargets[i]->object->position.x;
+                    center.y += controller->currentTargets[i]->object->position.y;
+                }
+                center.x /= currentTargetsCount;
+                center.y /= currentTargetsCount;
+                qsort(controller->currentTargets, currentTargetsCount, sizeof(game_target_t*), &sort_game_targets);
+                for (int i = 0; i < currentTargetsCount - 1; ++i)
+                {
+                    controller->currentTargets[i]->connectedTarget = controller->currentTargets[i + 1];
+                }
+                controller->currentTargets[currentTargetsCount - 1]->connectedTarget = controller->currentTargets[0];
+                goto switchDone;
+            }
+            default:
+                goto switchDone;
+            }
+            switchDone:
             node_list_remove_node(controller->script->timeElements, controller->script->timeElements->begin);
             dsc_time_element_free(nextTimeElement);
         }
