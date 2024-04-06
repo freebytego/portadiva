@@ -88,6 +88,25 @@ int main(int argc, char** argv) {
         return -1;
     }
 
+    game_target_effect_renderer_t* targetEffectRenderer;
+    if (game_target_effect_renderer_create(&targetEffectRenderer) != 0)
+    {
+        game_rhythm_controller_free(controller);
+        texture_manager_free(textureManager);
+        engine_free(engine);
+        return -1;
+    }
+    if (game_object_add_child(engine->scene->object, targetEffectRenderer->object) != 0)
+    {
+        game_target_effect_renderer_free(targetEffectRenderer);
+        game_rhythm_controller_free(controller);
+        texture_manager_free(textureManager);
+        engine_free(engine);
+        return -1;
+    }
+
+    game_rhythm_controller_set_target_effect_renderer(controller, targetEffectRenderer);
+
     game_target_real_renderer_t* targetRealRenderer;
     if (game_target_real_renderer_create(&targetRealRenderer) != 0)
     {

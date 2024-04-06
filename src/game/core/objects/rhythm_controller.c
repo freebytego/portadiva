@@ -87,6 +87,7 @@ void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
                 game_target_t* gameTarget;
                 game_target_create(&gameTarget, dscTarget, nextTimeElement->flyingTime, nextTimeElement->targets->length > 1);
                 game_object_add_child(controller->object, gameTarget->object);
+                game_target_effect_renderer_spawn_create_effect(controller->targetEffectRenderer, gameTarget);
                 game_target_create_target_real(gameTarget);
                 if (currentTargetsCount < 4) controller->currentTargets[currentTargetsCount] = gameTarget;
                 ++currentTargetsCount;
@@ -130,6 +131,11 @@ void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
 void game_rhythm_controller_set_target_real_renderer(game_rhythm_controller_t* controller, game_target_real_renderer_t* renderer)
 {
     controller->targetRealRenderer = renderer;
+}
+
+void game_rhythm_controller_set_target_effect_renderer(game_rhythm_controller_t* controller, game_target_effect_renderer_t* renderer)
+{
+    controller->targetEffectRenderer = renderer;
 }
 
 void game_rhythm_controller_free(game_rhythm_controller_t* controller)

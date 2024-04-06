@@ -99,7 +99,8 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
             continue;
         }
         renderable->type = GAME_OBJECT_RENDER;
-        renderable->gameObject = (game_object_t*)child->data;
+        renderable->gameObject = (game_object_t*)(child->data);
+        renderable->order = renderable->gameObject->renderProperties.order;
         engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, renderable);
         child = child->next;
     }

@@ -8,7 +8,6 @@ int game_target_effect_appear_create(game_target_effect_appear_t** out, texture_
         fprintf(stderr, "failed to allocate a target destroy effect");
         return -1;
     }
-
     render_properties_t renderProperties = render_properties_create(20.0f, 20.0f, 0.0f, 0.0f, 0.0f, RENDER_OFFSET_CENTER, 1.0f, 200);
     if (game_object_create(&effect->object, "target appear effect", position, renderProperties, texturePart) != 0)
     {
@@ -16,7 +15,6 @@ int game_target_effect_appear_create(game_target_effect_appear_t** out, texture_
         free(effect);
         return -1;
     }
-
     game_object_set_implementation(effect->object, effect);
     game_object_set_render(effect->object, (void (*)(void*))&game_target_effect_appear_render);
     game_object_set_cycle(effect->object, (void (*)(void*))&game_target_effect_appear_cycle);
@@ -41,6 +39,7 @@ void game_target_effect_appear_render(game_target_effect_appear_t* effect)
     }
     renderable->type = GAME_OBJECT_RENDER;
     renderable->gameObject = effect->object;
+    renderable->order = renderable->gameObject->renderProperties.order;
     engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, renderable);
 }
 

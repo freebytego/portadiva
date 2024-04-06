@@ -20,6 +20,7 @@ typedef struct {
     uint32_t startedAt;
     uint32_t ticks;
     game_target_real_renderer_t* targetRealRenderer;
+    game_target_effect_renderer_t* targetEffectRenderer;
     game_target_t* currentTargets[4];
 } game_rhythm_controller_t;
 
@@ -28,5 +29,6 @@ void game_rhythm_controller_cycle(game_rhythm_controller_t* controller);
 void game_rhythm_controller_render(game_rhythm_controller_t* controller);
 void game_rhythm_controller_free(game_rhythm_controller_t* controller);
 void game_rhythm_controller_set_target_real_renderer(game_rhythm_controller_t* controller, game_target_real_renderer_t* renderer);
+void game_rhythm_controller_set_target_effect_renderer(game_rhythm_controller_t* controller, game_target_effect_renderer_t* renderer);
 
 #endif

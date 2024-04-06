@@ -119,6 +119,7 @@ void game_target_render(game_target_t* target)
     }
     targetRenderable->type = GAME_OBJECT_RENDER;
     targetRenderable->gameObject = target->object;
+    targetRenderable->order = target->object->renderProperties.order;
     engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, targetRenderable);
 
     generic_renderable_t* targetNeedleRenderable;
@@ -128,6 +129,7 @@ void game_target_render(game_target_t* target)
     }
     targetNeedleRenderable->type = GAME_OBJECT_RENDER;
     targetNeedleRenderable->gameObject = target->needle->object;
+    targetNeedleRenderable->order = target->needle->object->renderProperties.order;
     engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, targetNeedleRenderable);
 }
 
