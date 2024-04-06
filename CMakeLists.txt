@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.16.3)
 project(portadiva)
 
 set(IS_DEBUG_BUILD CMAKE_BUILD_TYPE STREQUAL "Debug")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if (${IS_DEBUG_BUILD})
     add_compile_definitions(__DEBUG__)
@@ -26,6 +27,8 @@ add_executable(${PROJECT_NAME}
     src/game/core/objects/target_needle.c
     src/game/core/objects/target_real.c
     src/game/core/objects/target_real_renderer.c
+    src/game/core/objects/target_effect_renderer.c
+    src/game/core/objects/target_effect_appear.c
     src/game/core/objects/rhythm_controller.c   
 )
 

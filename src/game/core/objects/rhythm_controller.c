@@ -69,6 +69,7 @@ void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
         if (child->finished == 1)
         {
             game_target_free(child);
+            // todo: create splash thingy
         }
     }
 

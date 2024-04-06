@@ -7,13 +7,19 @@
 #include "include/engine/game_object.h"
 #include "include/engine/scene_object.h"
 #include "include/engine/trig_lookup.h"
+#include "include/engine/generic_renderer.h"
+#ifndef __APPLE__
 #include <GL/gl.h>
+#else
+#include <OpenGL/gl.h>
+#endif
 
 typedef struct engine_t
 {
     SDL_GLContext* context;
     SDL_Window* window;
     scene_object_t* scene;
+    generic_renderer_t* renderer;
     void (*free_scene)(scene_object_t*);
     short running;
     

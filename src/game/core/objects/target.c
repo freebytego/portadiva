@@ -9,20 +9,9 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
         return -1;
     }
 
-    render_properties_t renderProperties;
-
     target->desiredSize.x = 30.0f;
     target->desiredSize.y = 30.0f;
-
-    renderProperties.width = 0.0f;
-    renderProperties.height = 0.0f;
-    renderProperties.angle = 0.0f;
-    renderProperties.center.x = renderProperties.width / 2.0f;
-    renderProperties.center.y = renderProperties.height / 2.0f; 
-    renderProperties.offsetType = RENDER_OFFSET_CENTER;
-    renderProperties.offset.x = 0.0f; // todo: from config
-    renderProperties.offset.y = 0.0f; // todo: from config
-
+    render_properties_t renderProperties = render_properties_create(30.0f, 30.0f, 0.0f, 0.0f, 0.0f, RENDER_OFFSET_CENTER, 1.0f, 100);
     target->multi = multi;
 
     const char* type;
@@ -123,8 +112,23 @@ void game_target_cycle(game_target_t* target)
 
 void game_target_render(game_target_t* target)
 {
-    engine_generic_renderer_render(target->object);
-    engine_generic_renderer_render(target->needle->object);
+    generic_renderable_t* targetRenderable;
+    if (engine_generic_renderer_create_renderable(&targetRenderable) != 0)
+    {
+        return;
+    }
+    targetRenderable->type = GAME_OBJECT_RENDER;
+    targetRenderable->gameObject = target->object;
+    engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, targetRenderable);
+
+    generic_renderable_t* targetNeedleRenderable;
+    if (engine_generic_renderer_create_renderable(&targetNeedleRenderable) != 0)
+    {
+        return;
+    }
+    targetNeedleRenderable->type = GAME_OBJECT_RENDER;
+    targetNeedleRenderable->gameObject = target->needle->object;
+    engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, targetNeedleRenderable);
 }
 
 int game_target_create_target_real(game_target_t* target)

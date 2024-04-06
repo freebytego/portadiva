@@ -11,6 +11,7 @@
 #include "include/game/core/objects/target_needle.h"
 #include "include/game/core/objects/rhythm_controller.h"
 #include "include/game/core/objects/target_real.h"
+#include "include/game/core/objects/target_effect_appear.h"
 #include <stdbool.h>
 #include <math.h>
 

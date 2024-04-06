@@ -6,7 +6,11 @@
 #include <cjson/cJSON.h>
 #include <stdio.h>
 #include "include/core/list.h"
+#ifndef __APPLE__
 #include <GL/gl.h>
+#else
+#include <OpenGL/gl.h>
+#endif
 
 typedef struct
 {

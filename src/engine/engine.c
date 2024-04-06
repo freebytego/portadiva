@@ -42,6 +42,8 @@ int engine_create(engine_t** out)
     glEnable(GL_TEXTURE_2D);
     glViewport(0, 0, 480, 272);
     glEnable(GL_BLEND);
+    glEnable (GL_DEPTH_TEST);
+    glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     
@@ -55,6 +57,14 @@ int engine_create(engine_t** out)
     }
 
     populateLookupTables();
+
+    if (engine_generic_renderer_create(&engine->renderer) != 0)
+    {
+        SDL_GL_DeleteContext(engine->context);
+        SDL_DestroyWindow(engine->window);
+        free(engine);
+        return -1;
+    }
 
     engine->running = 1;
     engine->scene = NULL;
@@ -106,7 +116,11 @@ void engine_render(engine_t* engine)
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+    engine_generic_renderer_clear_queue(engine->renderer);
+
     scene_object_render(engine->scene);
+
+    engine_generic_renderer_render(engine->renderer);
 
     SDL_GL_SwapWindow(engine->window);
 }
@@ -119,6 +133,7 @@ void engine_free_scene(engine_t* engine)
 
 void engine_free(engine_t* engine)
 {
+    engine_generic_renderer_free(engine->renderer);
     if (NULL != engine->scene)
         engine->free_scene(engine->scene);
     SDL_DestroyWindow(engine->window);

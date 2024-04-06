@@ -2,4 +2,7 @@ build/*
 build1/*
 build
 build1
+test
+test/
 .vscode
+.DS_Store

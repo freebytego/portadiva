@@ -43,13 +43,13 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
         game_target_real_t* targetReal = (game_target_real_t*)object->implementation;
 
         glDisable(GL_TEXTURE_2D);
-        glColor4f(targetReal->trailColor[0], targetReal->trailColor[1], targetReal->trailColor[2], 0.1f);
+        glColor4f(targetReal->trailColor[0], targetReal->trailColor[1], targetReal->trailColor[2], 0.25f);
         glBegin(GL_QUAD_STRIP);
         float thickness = 3.0f;
         for (int i = 0; i < MAX_TRAILS; ++i)
         {
-            glVertex3f(targetReal->trails[0][i][0] - thickness, targetReal->trails[0][i][1], 0.0f);
-            glVertex3f(targetReal->trails[0][i][0] + thickness, targetReal->trails[0][i][1], 0.0f);
+            glVertex2f(targetReal->trails[0][i][0] - thickness, targetReal->trails[0][i][1]);
+            glVertex2f(targetReal->trails[0][i][0] + thickness, targetReal->trails[0][i][1]);
             thickness -= thickness / MAX_TRAILS;
         }
         glEnd();
@@ -57,7 +57,7 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
         glBegin(GL_LINE_STRIP);
         for (int i = 0; i < MAX_TRAILS; ++i)
         {
-            glVertex3f(targetReal->trails[1][i][0], targetReal->trails[1][i][1], 0.0f);
+            glVertex2f(targetReal->trails[1][i][0], targetReal->trails[1][i][1]);
         }
         glEnd();
 
@@ -75,15 +75,15 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
             glBindTexture(GL_TEXTURE_2D, targetReal->object->texturePart->texture->textureId);
             glEnable(GL_TEXTURE_2D);
             glBegin(GL_QUADS);
-            glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             glTexCoord2f(connectedTargetTexturePosition.x2, connectedTargetTexturePosition.y2);
-            glVertex3f(targetReal->target->real->object->position.x - normal.x, targetReal->target->real->object->position.y - normal.y, 0.0f);
+            glVertex2f(targetReal->target->real->object->position.x - normal.x, targetReal->target->real->object->position.y - normal.y);
             glTexCoord2f(connectedTargetTexturePosition.x1, connectedTargetTexturePosition.y2);
-            glVertex3f(targetReal->target->real->object->position.x + normal.x, targetReal->target->real->object->position.y + normal.y, 0.0f);
+            glVertex2f(targetReal->target->real->object->position.x + normal.x, targetReal->target->real->object->position.y + normal.y);
             glTexCoord2f(connectedTargetTexturePosition.x1, connectedTargetTexturePosition.y1);
-            glVertex3f(targetReal->target->connectedTarget->real->object->position.x - normal.x, targetReal->target->connectedTarget->real->object->position.y - normal.y, 0.0f);
+            glVertex2f(targetReal->target->connectedTarget->real->object->position.x - normal.x, targetReal->target->connectedTarget->real->object->position.y - normal.y);
             glTexCoord2f(connectedTargetTexturePosition.x2, connectedTargetTexturePosition.y1);
-            glVertex3f(targetReal->target->connectedTarget->real->object->position.x + normal.x, targetReal->target->connectedTarget->real->object->position.y + normal.y, 0.0f);
+            glVertex2f(targetReal->target->connectedTarget->real->object->position.x + normal.x, targetReal->target->connectedTarget->real->object->position.y + normal.y);
             glEnd();
         }
         child = child->next;
@@ -92,7 +92,15 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
     child = renderer->object->children->begin;
     while (NULL != child)
     {
-        engine_generic_renderer_render((game_object_t*)child->data);
+        generic_renderable_t* renderable;
+        if (engine_generic_renderer_create_renderable(&renderable) != 0)
+        {
+            child = child->next;
+            continue;
+        }
+        renderable->type = GAME_OBJECT_RENDER;
+        renderable->gameObject = (game_object_t*)child->data;
+        engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, renderable);
         child = child->next;
     }
 }

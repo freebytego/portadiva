@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "include/game/core/dsc/dsc.h"
 #include "include/game/core/objects/rhythm_controller.h"
+#include "include/game/core/objects/target_effect_renderer.h"
 #include "include/engine/engine.h"
 #include "include/engine/scene_object.h"
 #include "include/engine/texture_manager.h"
@@ -63,20 +64,26 @@ int main(int argc, char** argv) {
         engine_free(engine);
         return -1;
     }
+    if (texture_manager_add_texture(textureManager, "button_effects.json") != 0)
+    {
+        texture_manager_free(textureManager);
+        engine_free(engine);
+        return -1;
+    }
 
     engine_set_scene(engine, &scene_object_create, &scene_object_free);
 
     game_rhythm_controller_t* controller;
     if (game_rhythm_controller_create_from_path(&controller, "./test.dsc") != 0)
     {
-        // texture_manager_free(textureManager);
+        texture_manager_free(textureManager);
         engine_free(engine);
         return -1;
     }
     if (game_object_add_child(engine->scene->object, controller->object) != 0)
     {
         game_rhythm_controller_free(controller);
-        // texture_manager_free(textureManager);
+        texture_manager_free(textureManager);
         engine_free(engine);
         return -1;
     }
@@ -85,7 +92,7 @@ int main(int argc, char** argv) {
     if (game_target_real_renderer_create(&targetRealRenderer) != 0)
     {
         game_rhythm_controller_free(controller);
-        // texture_manager_free(textureManager);
+        texture_manager_free(textureManager);
         engine_free(engine);
         return -1;
     }
@@ -93,7 +100,7 @@ int main(int argc, char** argv) {
     {
         game_target_real_renderer_free(targetRealRenderer);
         game_rhythm_controller_free(controller);
-        // texture_manager_free(textureManager);
+        texture_manager_free(textureManager);
         engine_free(engine);
         return -1;
     }

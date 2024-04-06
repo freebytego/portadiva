@@ -32,6 +32,20 @@ int game_object_create(game_object_t** out, const char* name, SDL_FPoint positio
     return 0;
 }
 
+render_properties_t render_properties_create(float width, float height, float angle, float offsetX, float offsetY, render_offset_type_t offsetType, float opacity, uint16_t order)
+{
+    render_properties_t properties;
+    properties.width = width;
+    properties.height = height;
+    properties.angle = angle;
+    properties.offset.x = offsetX;
+    properties.offset.y = offsetY;
+    properties.offsetType = offsetType;
+    properties.opacity = opacity;
+    properties.order = order;
+    return properties;
+}
+
 void game_object_set_parent(game_object_t* object, game_object_t* parent)
 {
     object->parent = parent;

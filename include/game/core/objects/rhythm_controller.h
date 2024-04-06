@@ -11,6 +11,7 @@
 #include "include/game/core/dsc/dsc.h"
 #include "include/game/core/objects/target.h"
 #include "include/game/core/objects/target_real_renderer.h"
+#include "include/game/core/objects/target_effect_renderer.h"
 #include "include/core/list.h"
 
 typedef struct {

@@ -17,9 +17,12 @@ typedef struct render_properties_t
     float height;
     float angle;
     SDL_FPoint offset; // kinda dumb
-    SDL_FPoint center;
     render_offset_type_t offsetType;
-} render_properties_t; // probably needs a create function to prevent accidental reads of unset variables here
+    float opacity;
+    uint16_t order;
+} render_properties_t; 
+
+render_properties_t render_properties_create(float width, float height, float angle, float offsetX, float offsetY, render_offset_type_t offsetType, float opacity, uint16_t order);
 
 typedef struct game_object_t
 {

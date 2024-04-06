@@ -11,17 +11,7 @@ int game_target_real_create(game_target_real_t** out, game_target_t* target)
         return -1;
     }
 
-    render_properties_t renderProperties; // READ THIS FROM THE TEXTURE'S CONFIG!!!!
-    renderProperties.width = 30.0f;
-    renderProperties.height = 30.0f;
-    renderProperties.angle = 0.0f;
-    renderProperties.center.x = renderProperties.width / 2.0f;
-    renderProperties.center.y = renderProperties.height / 2.0f;
-    renderProperties.offset.x = 0.0f; // todo: from config
-    renderProperties.offset.y = 0.0f; // todo: from config
-
-    renderProperties.offsetType = RENDER_OFFSET_CENTER;
-
+    render_properties_t renderProperties = render_properties_create(30.0f, 30.0f, 0.0f, 0.0f, 0.0f, RENDER_OFFSET_CENTER, 1.0f, 250);
     const char* type;
     switch (target->dscTarget->type)
     {
