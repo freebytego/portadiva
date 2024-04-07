@@ -1,4 +1,4 @@
-#include "include/game/core/dsc/opcode.h"
+#include "include/game/dsc/opcode.h"
 
 short opcode_get_parameters_count(int opcode)
 {

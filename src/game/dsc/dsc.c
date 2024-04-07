@@ -1,4 +1,4 @@
-#include "include/game/core/dsc/dsc.h"
+#include "include/game/dsc/dsc.h"
 
 int dsc_script_create_from_file(dsc_script_t** out, const char* filePath)
 {

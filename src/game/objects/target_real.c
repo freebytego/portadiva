@@ -1,5 +1,5 @@
-#include "include/game/core/objects/target_real.h"
-#include "include/game/core/objects/target.h"
+#include "include/game/objects/target_real.h"
+#include "include/game/objects/target.h"
 #include <math.h>
 
 int game_target_real_create(game_target_real_t** out, game_target_t* target)

@@ -1,4 +1,4 @@
-#include "include/game/core/objects/rhythm_controller.h"
+#include "include/game/objects/rhythm_controller.h"
 
 int game_rhythm_controller_create_from_path(game_rhythm_controller_t** out, const char* filePath)
 {
@@ -68,8 +68,8 @@ void game_rhythm_controller_cycle(game_rhythm_controller_t* controller)
         childNode = childNode->next;
         if (child->finished == 1)
         {
+            game_target_effect_renderer_spawn_delete_effect(controller->targetEffectRenderer, child);
             game_target_free(child);
-            // todo: create splash thingy
         }
     }
 

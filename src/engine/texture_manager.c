@@ -106,8 +106,6 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
     textureDefinitionJsonFileContent[readBytes] = 0;
     fclose(textureDefinitionJsonFile);
 
-    printf("read: %s\n", textureDefinitionJsonFileContent);
-
     textureDefinitionJson = cJSON_Parse(textureDefinitionJsonFileContent);
     if (NULL == textureDefinitionJson)
     {
@@ -217,7 +215,7 @@ int texture_manager_add_texture(texture_manager_t* manager, const char* textureC
             }
             else
             {
-                printf("texture part at index %d has incorrect data, skipped\n", index);
+                fprintf(stderr, "texture part at index %d has incorrect data, skipped\n", index);
             }
             ++index;
         }

@@ -42,7 +42,6 @@ int engine_create(engine_t** out)
     glEnable(GL_TEXTURE_2D);
     glViewport(0, 0, 480, 272);
     glEnable(GL_BLEND);
-    glEnable (GL_DEPTH_TEST);
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
@@ -114,7 +113,7 @@ void engine_handle_input(engine_t* engine)
 void engine_render(engine_t* engine)
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
     engine_generic_renderer_clear_queue(engine->renderer);
 

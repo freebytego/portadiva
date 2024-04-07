@@ -1,4 +1,4 @@
-#include "include/game/core/objects/target.h"
+#include "include/game/objects/target.h"
 
 int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t flyingTime, int multi)
 {
@@ -76,13 +76,6 @@ int game_target_create(game_target_t** out, dsc_target_t* dscTarget, int32_t fly
     *out = target;
 
     return 0;
-}
-
-double bezier(double t, double P0, double P1, double P2, double P3) {
-    return (1 - t) * (1 - t) * (1 - t) * P0 +
-           3 * (1 - t) * (1 - t) * t * P1 +
-           3 * (1 - t) * t * t * P2 +
-           t * t * t * P3;
 }
 
 void game_target_cycle(game_target_t* target)

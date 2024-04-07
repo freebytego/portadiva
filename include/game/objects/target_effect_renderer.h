@@ -11,7 +11,9 @@ typedef struct game_target_effect_renderer_t
 {
     game_object_t* object;
     texture_part_t* spawnEffectTexturePart;
+    texture_part_t* destroyEffectTextureParts[3];
     list_t* spawnEffectTargets;
+    list_t* destroyEffectTargets;
 } game_target_effect_renderer_t;
 
 int game_target_effect_renderer_create(game_target_effect_renderer_t** out);

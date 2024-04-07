@@ -8,10 +8,10 @@
 #include "include/engine/scene_object.h"
 #include "include/engine/generic_renderer.h"
 
-#include "include/game/core/dsc/dsc.h"
-#include "include/game/core/objects/target.h"
-#include "include/game/core/objects/target_real_renderer.h"
-#include "include/game/core/objects/target_effect_renderer.h"
+#include "include/game/dsc/dsc.h"
+#include "include/game/objects/target.h"
+#include "include/game/objects/target_real_renderer.h"
+#include "include/game/objects/target_effect_renderer.h"
 #include "include/core/list.h"
 
 typedef struct {

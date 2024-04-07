@@ -1,5 +1,5 @@
-#include "include/game/core/objects/target_needle.h"
-#include "include/game/core/objects/target.h"
+#include "include/game/objects/target_needle.h"
+#include "include/game/objects/target.h"
 
 int game_target_needle_create(game_target_needle_t** out, game_target_t* target)
 {
@@ -10,7 +10,7 @@ int game_target_needle_create(game_target_needle_t** out, game_target_t* target)
         return -1;
     }
 
-    render_properties_t renderProperties = render_properties_create(30.0f, 22.0f, 0.0f, 0.0f, -8.0f, RENDER_OFFSET_CENTER, 1.0f, 10);
+    render_properties_t renderProperties = render_properties_create(30.0f, 22.0f, 0.0f, 0.0f, -8.0f, RENDER_OFFSET_CENTER, 1.0f, 150);
     texture_part_t* texturePart = texture_manager_find_texture_part_in_registered("textures", "buttons", "needle");
     
     if (game_object_create(&targetNeedle->object, "target needle", target->object->position, renderProperties, texturePart) != 0)

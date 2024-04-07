@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "include/game/core/dsc/dsc.h"
-#include "include/game/core/objects/rhythm_controller.h"
-#include "include/game/core/objects/target_effect_renderer.h"
+#include "include/game/dsc/dsc.h"
+#include "include/game/objects/rhythm_controller.h"
+#include "include/game/objects/target_effect_renderer.h"
 #include "include/engine/engine.h"
 #include "include/engine/scene_object.h"
 #include "include/engine/texture_manager.h"

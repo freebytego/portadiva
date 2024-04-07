@@ -1,4 +1,4 @@
-#include "include/game/core/objects/target_effect_appear.h"
+#include "include/game/objects/target_effect_appear.h"
 
 int game_target_effect_appear_create(game_target_effect_appear_t** out, texture_part_t* texturePart, SDL_FPoint position)
 {
@@ -8,7 +8,7 @@ int game_target_effect_appear_create(game_target_effect_appear_t** out, texture_
         fprintf(stderr, "failed to allocate a target destroy effect");
         return -1;
     }
-    render_properties_t renderProperties = render_properties_create(20.0f, 20.0f, 0.0f, 0.0f, 0.0f, RENDER_OFFSET_CENTER, 1.0f, 200);
+    render_properties_t renderProperties = render_properties_create(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, RENDER_OFFSET_CENTER, 0.6f, 200);
     if (game_object_create(&effect->object, "target appear effect", position, renderProperties, texturePart) != 0)
     {
         fprintf(stderr, "failed to create a game object for target appear effect");
@@ -20,6 +20,13 @@ int game_target_effect_appear_create(game_target_effect_appear_t** out, texture_
     game_object_set_cycle(effect->object, (void (*)(void*))&game_target_effect_appear_cycle);
     game_object_set_free(effect->object, (void (*)(void*))&game_target_effect_appear_free);
 
+    effect->createdAt = SDL_GetTicks() * 100;
+    effect->desiredSize.x = 100.0f;
+    effect->desiredSize.y = 100.0f;
+    effect->doingAnimation = 1;
+    effect->animationTime = 0.5f * 1000 * 100;
+    effect->animationEndAt = effect->createdAt + effect->animationTime;
+
     *out = effect;
 
     return 0;
@@ -27,7 +34,22 @@ int game_target_effect_appear_create(game_target_effect_appear_t** out, texture_
 
 void game_target_effect_appear_cycle(game_target_effect_appear_t* effect)
 {
-    
+    if (effect->doingAnimation)
+    {
+        if (SDL_GetTicks() * 100 >= effect->animationEndAt)
+        {
+            effect->doingAnimation = 0;
+            effect->object->renderProperties.width = effect->desiredSize.x;
+            effect->object->renderProperties.height = effect->desiredSize.y;
+        }
+        else
+        {
+            double animationProgress = ((double)(SDL_GetTicks() * 100 - effect->createdAt) / (double)(effect->animationEndAt - effect->createdAt));
+            effect->object->renderProperties.width = bezier(animationProgress, 0.0, 0.6, 0.8, 1.0) * effect->desiredSize.x;
+            effect->object->renderProperties.height = bezier(animationProgress, 0.0, 0.6, 0.8, 1.0) * effect->desiredSize.y;
+            effect->object->renderProperties.opacity = bezier(animationProgress, 1.0, 0.9, 0.6, 0.0) * 0.6;
+        }
+    }
 }
 
 void game_target_effect_appear_render(game_target_effect_appear_t* effect)

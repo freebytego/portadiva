@@ -5,13 +5,14 @@
 
 #include "include/engine/engine.h"
 #include "include/engine/game_object.h"
-#include "include/game/core/dsc/target.h"
+#include "include/game/dsc/target.h"
 #include "include/engine/generic_renderer.h"
 #include "include/engine/texture_manager.h"
-#include "include/game/core/objects/target_needle.h"
-#include "include/game/core/objects/rhythm_controller.h"
-#include "include/game/core/objects/target_real.h"
-#include "include/game/core/objects/target_effect_appear.h"
+#include "include/game/objects/target_needle.h"
+#include "include/game/objects/rhythm_controller.h"
+#include "include/game/objects/target_real.h"
+#include "include/game/objects/target_effect_appear.h"
+#include "include/game/utils/bezier.h"
 #include <stdbool.h>
 #include <math.h>
 

@@ -82,41 +82,40 @@ void engine_generic_renderer_render(generic_renderer_t* renderer)
 
                     switch (renderable->gameObject->renderProperties.offsetType)
                     {
-                    case RENDER_OFFSET_TOP_LEFT:
-                    {
-                        rect.x = renderable->gameObject->position.x;
-                        rect.y = renderable->gameObject->position.y;
-                        break;
+                        case RENDER_OFFSET_TOP_LEFT:
+                        {
+                            rect.x = renderable->gameObject->position.x;
+                            rect.y = renderable->gameObject->position.y;
+                            break;
+                        }
+                        case RENDER_OFFSET_CENTER:
+                        {
+                            rect.x = renderable->gameObject->position.x - rect.w / 2.0f;
+                            rect.y = renderable->gameObject->position.y - rect.h / 2.0f;
+                        }
                     }
-                    case RENDER_OFFSET_CENTER:
-                    {
-                        rect.x = renderable->gameObject->position.x - rect.w / 2.0f;
-                        rect.y = renderable->gameObject->position.y - rect.h / 2.0f;
-                    }
-                    }
+                    rect.x += renderable->gameObject->renderProperties.offset.x;
+                    rect.y += renderable->gameObject->renderProperties.offset.y;
                     if (NULL == renderable->gameObject->texturePart)
                     {
                         glDisable(GL_TEXTURE_2D);
                         glBegin(GL_QUADS);
 
-                        glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(rect.x, rect.y);
-                        glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(rect.x + rect.w, rect.y);
-                        glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(rect.x + rect.w, rect.y + rect.h);
-                        glColor3f(1.0f, 1.0f, 0.0f); glVertex2f(rect.x, rect.y + rect.h);
+                        glColor4f(1.0f, 1.0f, 0.0f, 1.0f); glVertex2f(rect.x, rect.y);
+                        glColor4f(1.0f, 1.0f, 0.0f, 1.0f); glVertex2f(rect.x + rect.w, rect.y);
+                        glColor4f(1.0f, 1.0f, 0.0f, 1.0f); glVertex2f(rect.x + rect.w, rect.y + rect.h);
+                        glColor4f(1.0f, 1.0f, 0.0f, 1.0f); glVertex2f(rect.x, rect.y + rect.h);
 
                         glEnd();
                         glEnable(GL_TEXTURE_2D);
-                        return;
+                        continue;
                     }
-                    rect.x += renderable->gameObject->renderProperties.offset.x;
-                    rect.y += renderable->gameObject->renderProperties.offset.y;
 
                     texture_position_t position = texture_manager_get_texture_position_from_texture_part(renderable->gameObject->texturePart);
 
                     glEnable(GL_TEXTURE_2D);
                     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
                     glEnable(GL_BLEND);
-                    glEnable (GL_DEPTH_TEST);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     glBindTexture(GL_TEXTURE_2D, renderable->gameObject->texturePart->texture->textureId);
 

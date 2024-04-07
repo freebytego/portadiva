@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include "include/engine/game_object.h"
 #include "include/engine/generic_renderer.h"
-#include "include/game/core/objects/target_real.h"
+#include "include/game/objects/target_real.h"
 
 typedef struct game_target_t game_target_t;
 typedef struct game_target_real_renderer_t

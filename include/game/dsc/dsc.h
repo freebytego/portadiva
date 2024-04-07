@@ -3,8 +3,8 @@
 
 #include "include/core/list.h"
 
-#include "include/game/core/dsc/target.h"
-#include "include/game/core/dsc/opcode.h"
+#include "include/game/dsc/target.h"
+#include "include/game/dsc/opcode.h"
 
 #include <stdlib.h>
 #include <stdint.h>
