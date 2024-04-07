@@ -113,7 +113,7 @@ void engine_handle_input(engine_t* engine)
 void engine_render(engine_t* engine)
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
 
     engine_generic_renderer_clear_queue(engine->renderer);
 

@@ -125,9 +125,24 @@ int main(int argc, char** argv) {
     }
     game_rhythm_controller_set_target_real_renderer(controller, targetRealRenderer);
 
+    // psp can't handle my crap code, limiting to 30 makes it way more consistant.
+    // I need to optimize stuff so bad !!!!
+    const int fps = 30;
+    const int frameDelay = 1000 / fps;
+
+    uint32_t frameStart;
+    int frameTime;
+
     while (engine->running)
     {
+        frameStart = SDL_GetTicks();
         engine_cycle(engine);
+
+        frameTime = SDL_GetTicks() - frameStart;
+        if (frameDelay > frameTime)
+        {
+            SDL_Delay(frameDelay - frameTime);
+        }
     }
 
     texture_manager_free(textureManager);

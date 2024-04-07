@@ -46,7 +46,7 @@ int sort_renderables(const void* a, const void* b)
 {
     generic_renderable_t* renderableA = *(generic_renderable_t**)a;
     generic_renderable_t* renderableB = *(generic_renderable_t**)b;
-    return (renderableA->order + renderableA->gameObject->id) - (renderableB->order + renderableB->gameObject->id);
+    return (renderableA->order) - (renderableB->order);
 }
 
 void engine_generic_renderer_render(generic_renderer_t* renderer)

@@ -68,7 +68,7 @@ void game_target_real_renderer_draw_trail(game_target_real_t* targetReal)
         glBindTexture(GL_TEXTURE_2D, targetReal->object->texturePart->texture->textureId);
         glEnable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
         glTexCoord2f(connectedTargetTexturePosition.x2, connectedTargetTexturePosition.y2);
         glVertex2f(targetReal->target->real->object->position.x - normal.x, targetReal->target->real->object->position.y - normal.y);
         glTexCoord2f(connectedTargetTexturePosition.x1, connectedTargetTexturePosition.y2);
@@ -89,17 +89,17 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
     {
         game_object_t* object = (game_object_t*)child->data;
         game_target_real_t* targetReal = (game_target_real_t*)object->implementation;
-        // generic_renderable_t* renderable;
-        // if (engine_generic_renderer_create_renderable(&renderable) != 0)
-        // {
-        //     child = child->next;
-        //     continue;
-        // }
-        // renderable->type = FUNCTION_RENDER;
-        // renderable->renderFunctionTarget = (void*)(targetReal);
-        // renderable->render_function = (void(*)(void*))&game_target_real_renderer_draw_trail;
-        // renderable->order = targetReal->object->renderProperties.order - 1;
-        // engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, renderable);
+        generic_renderable_t* renderable;
+        if (engine_generic_renderer_create_renderable(&renderable) != 0)
+        {
+            child = child->next;
+            continue;
+        }
+        renderable->type = FUNCTION_RENDER;
+        renderable->renderFunctionTarget = (void*)(targetReal);
+        renderable->render_function = (void(*)(void*))&game_target_real_renderer_draw_trail;
+        renderable->order = targetReal->object->id + targetReal->object->renderProperties.order - 1;
+        engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, renderable);
         child = child->next;
     }
     // then the target itself
@@ -114,7 +114,7 @@ void game_target_real_renderer_render(game_target_real_renderer_t* renderer)
         }
         renderable->type = GAME_OBJECT_RENDER;
         renderable->gameObject = (game_object_t*)(child->data);
-        renderable->order = renderable->gameObject->renderProperties.order;
+        renderable->order = renderable->gameObject->id + renderable->gameObject->renderProperties.order;
         engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, renderable);
         child = child->next;
     }

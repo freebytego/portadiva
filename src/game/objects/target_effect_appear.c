@@ -61,7 +61,7 @@ void game_target_effect_appear_render(game_target_effect_appear_t* effect)
     }
     renderable->type = GAME_OBJECT_RENDER;
     renderable->gameObject = effect->object;
-    renderable->order = renderable->gameObject->renderProperties.order;
+    renderable->order = renderable->gameObject->renderProperties.order + effect->object->id;
     engine_generic_renderer_add_to_queue(GLOBAL_ENGINE->renderer, renderable);
 }
 
